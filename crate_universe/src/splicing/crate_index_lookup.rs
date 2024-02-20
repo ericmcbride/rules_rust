@@ -46,7 +46,10 @@ impl CrateIndexLookup {
     fn index_config(&self) -> Result<IndexConfig, crates_index::Error> {
         match self {
             Self::Git(index) => index.index_config(),
-            Self::Http(index) => index.index_config(),
+            Self::Http(index) => {
+                println!("Sparse index is {:?}", index);
+                index.index_config()
+            }
         }
     }
 }
