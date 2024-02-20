@@ -376,6 +376,8 @@ impl WorkspaceMetadata {
                         source_id
                     )
                 })?;
+                println!("Source id is {:?}", source_id);
+                println!("Source url is {:?}", source_url);
                 lookup.get_source_info(pkg).map(|source_info| {
                     (
                         CrateId::new(pkg.name.as_str().to_owned(), pkg.version.to_string()),
