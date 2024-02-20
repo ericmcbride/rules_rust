@@ -47,7 +47,7 @@ impl Renderer {
 
     pub fn render(&self, context: &Context) -> Result<BTreeMap<PathBuf, String>> {
         let mut output = BTreeMap::new();
-
+        println!("The context to render is {:#?}", context);
         let platforms = self.render_platform_labels(context);
         output.extend(self.render_build_files(context, &platforms)?);
         output.extend(self.render_crates_module(context, &platforms)?);
