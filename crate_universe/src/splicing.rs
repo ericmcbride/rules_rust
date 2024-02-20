@@ -367,7 +367,7 @@ impl WorkspaceMetadata {
         let additional_sources = pkg_sources
             .iter()
             .map(|pkg| {
-                println!("PKg info is {:?}", pkg);
+                println!("PKg info is {:#?}", pkg);
                 let source_id = pkg.source.as_ref().unwrap();
                 let source_url = source_id.url().to_string();
                 let lookup = crate_indexes.get(&source_url).ok_or_else(|| {
