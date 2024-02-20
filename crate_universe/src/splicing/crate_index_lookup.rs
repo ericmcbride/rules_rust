@@ -47,7 +47,7 @@ impl CrateIndexLookup {
         match self {
             Self::Git(index) => index.index_config(),
             Self::Http(index) => {
-                println!("Sparse index is {:?}", index);
+                println!("Sparse index is {}", index.url());
                 index.index_config()
             }
         }
