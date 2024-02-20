@@ -345,9 +345,7 @@ impl WorkspaceMetadata {
                         }
                         SourceKind::SparseRegistry => {
                             println!("Else Sparse Registry {:?}", index_url);
-                            CrateIndexLookup::Http(crates_index::SparseIndex::from_url(
-                                format!("sparse+{}", index_url).as_str(),
-                            )?)
+                            CrateIndexLookup::Http(crates_index::SparseIndex::from_url(index_url)?)
                         }
                         unknown => {
                             return Err(anyhow!(
