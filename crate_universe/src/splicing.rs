@@ -367,7 +367,6 @@ impl WorkspaceMetadata {
         let additional_sources = pkg_sources
             .iter()
             .map(|pkg| {
-                println!("PKg info is {:#?}", pkg);
                 let source_id = pkg.source.as_ref().unwrap();
                 let source_url = source_id.url().to_string();
                 let lookup = crate_indexes.get(&source_url).ok_or_else(|| {
@@ -376,8 +375,6 @@ impl WorkspaceMetadata {
                         source_id
                     )
                 })?;
-                println!("Source id is {:?}", source_id);
-                println!("Source url is {:?}", source_url);
                 lookup.get_source_info(pkg).map(|source_info| {
                     (
                         CrateId::new(pkg.name.as_str().to_owned(), pkg.version.to_string()),
