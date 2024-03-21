@@ -196,18 +196,18 @@ def _get_generator(module_ctx):
         if var in module_ctx.os.environ:
             use_environ = True
 
-    host_triple = get_host_triple(module_ctx)
-    binary_ext = system_to_binary_ext(host_triple.system)
+    #host_triple = get_host_triple(module_ctx)
+    #binary_ext = system_to_binary_ext(host_triple.system)
 
     generator_path = module_ctx.path(Label("@cargo_bazel_bootstrap//:cargo-bazel"))
-    output = repository_ctx.path("cargo-bazel.exe" if "win" in repository_ctx.os.name else "cargo-bazel")
+    output = module_ctx.path("cargo-bazel.exe" if "win" in module_ctx.os.name else "cargo-bazel")
 
     print("output path is %s", generator_path)
     print("generator path is %s", generator_path)
 
     if generator_path != "":
         generator_path = "file://{generator_path}"
-        result = repository_ctx.download(
+        result = module_ctx.download(
             output = output,
             url = generator_path,
             executable = True,
