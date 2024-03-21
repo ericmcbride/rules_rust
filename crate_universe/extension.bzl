@@ -190,6 +190,7 @@ def _generate_hub_and_spokes(module_ctx, cargo_bazel, cfg, annotations):
         else:
             fail("Invalid repo: expected Http or Git to exist for crate %s-%s, got %s" % (name, version, repo))
 
+
 def _get_generator(module_ctx):
     host_triple = get_host_triple(module_ctx)
     use_environ = False
@@ -197,7 +198,7 @@ def _get_generator(module_ctx):
         if var in module_ctx.os.environ:
             use_environ = True
 
-    output = repository_ctx.path("cargo-bazel.exe" if "win" in module_ctx.os.name else "cargo-bazel")
+    output = module_ctx.path("cargo-bazel.exe" if "win" in module_ctx.os.name else "cargo-bazel")
 
     if use_environ:
         generator_sha256 = module_ctx.os.environ.get(CARGO_BAZEL_GENERATOR_SHA256)
