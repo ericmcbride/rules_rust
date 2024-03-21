@@ -37,3 +37,7 @@ CARGO_BAZEL_SHA256S = {
   "x86_64-unknown-linux-gnu": "572bed88d08cd5da72c312b6dad285008083c256470b490c016b756eb89ad52d",
   "x86_64-unknown-linux-musl": "dd3d20c8b7f982f12286b6d1af3c9c7ac2ccfdc54a56b5e0349717379124f2aa"
 }
+
+# Example:
+# Label("//crate_universe:cargo_bazel_bin")
+CARGO_BAZEL_LABEL = Label("//crate_universe:cargo_bazel_bin")
