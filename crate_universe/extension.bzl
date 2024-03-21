@@ -191,6 +191,7 @@ def _generate_hub_and_spokes(module_ctx, cargo_bazel, cfg, annotations):
             fail("Invalid repo: expected Http or Git to exist for crate %s-%s, got %s" % (name, version, repo))
 
 def _get_generator(module_ctx):
+    host_triple = get_host_triple(module_ctx)
     use_environ = False
     for var in GENERATOR_ENV_VARS:
         if var in module_ctx.os.environ:
