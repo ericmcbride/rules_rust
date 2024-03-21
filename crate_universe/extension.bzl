@@ -186,7 +186,7 @@ def _crate_impl(module_ctx):
     # Determine the current host's platform triple
     host_triple = get_host_triple(module_ctx)
 
-    cargo_bazel, _ = get_generator(module_ctx)
+    cargo_bazel, _ = get_generator(module_ctx, host_triple)
     all_repos = []
     for mod in module_ctx.modules:
         module_annotations = {}
