@@ -184,7 +184,7 @@ def _generate_hub_and_spokes(module_ctx, cargo_bazel, cfg, annotations):
 
 def _crate_impl(module_ctx):
     # Determine the current host's platform triple
-    host_triple = get_host_triple(repository_ctx)
+    host_triple = get_host_triple(module_ctx)
 
     cargo_bazel, _ = get_generator(module_ctx)
     all_repos = []
