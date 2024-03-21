@@ -30,7 +30,6 @@ def get_cargo_bazel_runner(module_ctx, cargo_bazel):
 
     cargo_path = str(module_ctx.path(Label("@rust_host_tools//:bin/cargo{}".format(binary_ext))))
     rustc_path = str(module_ctx.path(Label("@rust_host_tools//:bin/rustc{}".format(binary_ext))))
-    cargo_bazel = module_ctx.path(Label(cargo_bazel))
 
     # Placing this as a nested function allows users to call this right at the
     # start of a module extension, thus triggering any restarts as early as
