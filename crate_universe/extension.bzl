@@ -182,13 +182,14 @@ def _generate_hub_and_spokes(module_ctx, cargo_bazel, cfg, annotations):
         else:
             fail("Invalid repo: expected Http or Git to exist for crate %s-%s, got %s" % (name, version, repo))
 
+
+CARGO_BAZEL_GENERATOR_SHA256 = "CARGO_BAZEL_GENERATOR_SHA256"
+CARGO_BAZEL_GENERATOR_URL = "CARGO_BAZEL_GENERATOR_URL"
+
 GENERATOR_ENV_VARS = [
     CARGO_BAZEL_GENERATOR_URL,
     CARGO_BAZEL_GENERATOR_SHA256,
 ]
-
-CARGO_BAZEL_GENERATOR_SHA256 = "CARGO_BAZEL_GENERATOR_SHA256"
-CARGO_BAZEL_GENERATOR_URL = "CARGO_BAZEL_GENERATOR_URL"
 
 def _get_generator(module_ctx):
     use_environ = False
