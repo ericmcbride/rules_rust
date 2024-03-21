@@ -182,8 +182,31 @@ def _generate_hub_and_spokes(module_ctx, cargo_bazel, cfg, annotations):
         else:
             fail("Invalid repo: expected Http or Git to exist for crate %s-%s, got %s" % (name, version, repo))
 
-def _get_generator(module_ctx, host_triple):
-    print("Module ctx is %s", module_ctx)
+
+def _get_generator(module_ctx):
+    use_environ = False
+    for var in GENERATOR_ENV_VARS:
+        if var in module_ctx.os.environ:
+            use_environ = True
+    
+    output = module_ctx.path("cargo-bazel.exe" if "win" in module_ctx.os.name else "cargo-bazel")
+    
+    if output != "":
+    	generator_url = "file://{0}".format(output)
+    
+    if use_environ:
+        generator_sha256 = module_ctx.os.environ.get(CARGO_BAZEL_GENERATOR_SHA256)
+        generator_url = module_ctx.os.environ.get(CARGO_BAZEL_GENERATOR_URL)
+
+    # Download the file into place
+    if generator_url:
+       module_ctx.download(
+            output = output,
+            url = generator_url,
+            executable = True,
+        )
+        return output
+
     return get_cargo_bazel_runner(module_ctx)
 
 
@@ -191,7 +214,7 @@ def _crate_impl(module_ctx):
     # Determine the current host's platform triple
     host_triple = get_host_triple(module_ctx)
 
-    cargo_bazel = _get_generator(module_ctx, host_triple)
+    cargo_bazel = _get_generator(module_ctx)
     all_repos = []
     for mod in module_ctx.modules:
         module_annotations = {}
