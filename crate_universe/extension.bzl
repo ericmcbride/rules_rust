@@ -221,19 +221,20 @@ def _get_generator(module_ctx):
             sha256 = generator_sha256,
             executable = True,
         )
-        return output, None
+        return output
 
     result = module_ctx.download(
         output = output,
         url = generator_url,
         executable = True,
     )
-
+    print("output is {:?}", output)
     return output
 
 def _crate_impl(module_ctx):
-    print("Getting cargo bazel")
-    cargo_bazel = _get_generator(module_ctx)
+    # get the bazel binary path
+    cargo_bazel_output = _get_generator(module_ctx)
+    cargo_bazel = get_cargo_bazel_runner(module_ctx, cargo_bazel_output)
     print("Got cargo bazel")
     all_repos = []
     for mod in module_ctx.modules:
