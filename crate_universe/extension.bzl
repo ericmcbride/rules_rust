@@ -182,7 +182,7 @@ def _generate_hub_and_spokes(module_ctx, cargo_bazel, cfg, annotations):
         else:
             fail("Invalid repo: expected Http or Git to exist for crate %s-%s, got %s" % (name, version, repo))
 
-def get_generator(module_ctx, host_triple):
+def _get_generator(module_ctx, host_triple):
     print("Module ctx is %s", module_ctx)
     return get_cargo_bazel_runner(module_ctx)
 
