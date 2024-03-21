@@ -7,7 +7,7 @@ load("//crate_universe:defs.bzl", _crate_universe_crate = "crate")
 load("//crate_universe/private:crates_vendor.bzl", "CRATES_VENDOR_ATTRS", "generate_config_file", "generate_splicing_manifest")
 load("//crate_universe/private:generate_utils.bzl", "render_config")
 load("//crate_universe/private/module_extensions:cargo_bazel_bootstrap.bzl", "get_cargo_bazel_runner")
-load("//crate_universe/private:urls.bzl", "CARGO_BAZEL_URLS")
+load("//crate_universe/private:urls.bzl", "CARGO_BAZEL_URLS", "CARGO_BAZEL_SHA256S")
 load("//rust/platform:triple.bzl", "get_host_triple")
 
 # A list of labels which may be relative (and if so, is within the repo the rule is generated in).
@@ -204,7 +204,7 @@ def _get_generator(module_ctx):
         generator_sha256 = module_ctx.os.environ.get(CARGO_BAZEL_GENERATOR_SHA256)
         generator_url = module_ctx.os.environ.get(CARGO_BAZEL_GENERATOR_URL)
     else:
-        generator_sha256 = CARGO_BAZEL_URLS.get(host_triple)
+        generator_sha256 = CARGO_BAZEL_SHA256S.get(host_triple)
         generator_url = CARGO_BAZEL_URLS.get(host_triple)
 
     if not generator_url:
@@ -228,14 +228,14 @@ def _get_generator(module_ctx):
         url = generator_url,
         executable = True,
     )
-    print("output is {:?}", output)
+    
     return output
 
 def _crate_impl(module_ctx):
-    # get the bazel binary path
+    # we download the binary, instead of compiling in place
     cargo_bazel_output = _get_generator(module_ctx)
     cargo_bazel = get_cargo_bazel_runner(module_ctx, cargo_bazel_output)
-    print("Got cargo bazel")
+    
     all_repos = []
     for mod in module_ctx.modules:
         module_annotations = {}
