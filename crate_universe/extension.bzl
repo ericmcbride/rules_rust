@@ -198,6 +198,9 @@ def _get_generator(module_ctx):
 
     generator = module_ctx.path(Label("@cargo_bazel_bootstrap//:cargo-bazel"))
     print("Output is %s", generator)
+    if output != "":
+        return generator
+
     #if not use_environ:
     #    generator = module_ctx.path(Label(output))
     #    print("Generator is %s", generator)
