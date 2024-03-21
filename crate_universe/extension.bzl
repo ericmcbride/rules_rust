@@ -5,7 +5,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("//crate_universe:defs.bzl", _crate_universe_crate = "crate")
 load("//crate_universe/private:crates_vendor.bzl", "CRATES_VENDOR_ATTRS", "generate_config_file", "generate_splicing_manifest")
-load("//crate_universe/private:generate_utils.bzl", "render_config", "get_generator")
+load("//crate_universe/private:generate_utils.bzl", "get_generator", "render_config")
 load("//crate_universe/private/module_extensions:cargo_bazel_bootstrap.bzl", "get_cargo_bazel_runner")
 load("//rust/platform:triple.bzl", "get_host_triple")
 
@@ -195,19 +195,19 @@ def _get_generator(module_ctx):
     for var in GENERATOR_ENV_VARS:
         if var in module_ctx.os.environ:
             use_environ = True
-    
+
     output = module_ctx.path("cargo-bazel.exe" if "win" in module_ctx.os.name else "cargo-bazel")
-    
+
     if output != "":
         generator_url = "file://{0}".format(output)
-    
+
     if use_environ:
         generator_sha256 = module_ctx.os.environ.get(CARGO_BAZEL_GENERATOR_SHA256)
         generator_url = module_ctx.os.environ.get(CARGO_BAZEL_GENERATOR_URL)
 
     # Download the file into place
     if generator_url:
-       module_ctx.download(
+        module_ctx.download(
             output = output,
             url = generator_url,
             executable = True,
@@ -215,7 +215,6 @@ def _get_generator(module_ctx):
         return output
 
     return get_cargo_bazel_runner(module_ctx)
-
 
 def _crate_impl(module_ctx):
     # Determine the current host's platform triple
