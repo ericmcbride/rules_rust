@@ -8,6 +8,7 @@ load("//crate_universe/private:crates_vendor.bzl", "CRATES_VENDOR_ATTRS", "gener
 load("//crate_universe/private:generate_utils.bzl", "render_config")
 load("//crate_universe/private/module_extensions:cargo_bazel_bootstrap.bzl", "get_cargo_bazel_runner")
 load("//crate_universe/private:urls.bzl", "CARGO_BAZEL_URLS")
+load("//rust/platform:triple.bzl", "get_host_triple")
 
 # A list of labels which may be relative (and if so, is within the repo the rule is generated in).
 #
