@@ -5,9 +5,8 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("//crate_universe:defs.bzl", _crate_universe_crate = "crate")
 load("//crate_universe/private:crates_vendor.bzl", "CRATES_VENDOR_ATTRS", "generate_config_file", "generate_splicing_manifest")
-load("//crate_universe/private:generate_utils.bzl", "get_generator", "render_config")
+load("//crate_universe/private:generate_utils.bzl", "render_config")
 load("//crate_universe/private/module_extensions:cargo_bazel_bootstrap.bzl", "get_cargo_bazel_runner")
-load("//rust/platform:triple.bzl", "get_host_triple")
 
 # A list of labels which may be relative (and if so, is within the repo the rule is generated in).
 #
@@ -182,60 +181,8 @@ def _generate_hub_and_spokes(module_ctx, cargo_bazel, cfg, annotations):
         else:
             fail("Invalid repo: expected Http or Git to exist for crate %s-%s, got %s" % (name, version, repo))
 
-CARGO_BAZEL_GENERATOR_SHA256 = "CARGO_BAZEL_GENERATOR_SHA256"
-CARGO_BAZEL_GENERATOR_URL = "CARGO_BAZEL_GENERATOR_URL"
-
-GENERATOR_ENV_VARS = [
-    CARGO_BAZEL_GENERATOR_URL,
-    CARGO_BAZEL_GENERATOR_SHA256,
-]
-
-def _get_generator(module_ctx):
-    use_environ = False
-    for var in GENERATOR_ENV_VARS:
-        if var in module_ctx.os.environ:
-            use_environ = True
-
-    #host_triple = get_host_triple(module_ctx)
-    #binary_ext = system_to_binary_ext(host_triple.system)
-
-    generator_path = module_ctx.path(Label("@cargo_bazel_bootstrap//:cargo-bazel"))
-    output = module_ctx.path("cargo-bazel.exe" if "win" in module_ctx.os.name else "cargo-bazel")
-
-    print("output path is %s", generator_path)
-    print("generator path is %s", generator_path)
-
-    if generator_path != "":
-        generator_path = "file://{0}".format(generator_path)
-        result = module_ctx.download(
-            output = output,
-            url = generator_path,
-            executable = True,
-        )
-
-        def run():
-            return output
-
-        return run
-
-    #if not use_environ:
-    #    generator = module_ctx.path(Label(output))
-    #    print("Generator is %s", generator)
-    #    for _ in range(1, 100):
-    #        real_generator = generator.realpath
-    #        print("Real generator is %s", real_generator)
-    #       if real_generator == generator:
-    #           break
-    #       generator = real_generator
-    #   return generator
-
-    return get_cargo_bazel_runner(module_ctx)
-
 def _crate_impl(module_ctx):
-    # Determine the current host's platform triple
-    host_triple = get_host_triple(module_ctx)
-
-    cargo_bazel = _get_generator(module_ctx)
+    cargo_bazel = get_cargo_bazel_runner(module_ctx)
     all_repos = []
     for mod in module_ctx.modules:
         module_annotations = {}
@@ -247,7 +194,7 @@ def _crate_impl(module_ctx):
 
             # The crate.annotation function can take in either a list or a bool.
             # For the tag-based method, because it has type safety, we have to
-            # split it into two parameters
+            # split it into two parameters.
             if annotation_dict.pop("gen_all_binaries"):
                 annotation_dict["gen_binaries"] = True
             annotation_dict["gen_build_script"] = _OPT_BOOL_VALUES[annotation_dict["gen_build_script"]]
