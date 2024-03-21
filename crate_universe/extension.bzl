@@ -206,7 +206,7 @@ def _get_generator(module_ctx):
     print("generator path is %s", generator_path)
 
     if generator_path != "":
-        generator_path = "file://{generator_path}"
+        generator_path = "file://{0}".format(generator_path)
         result = module_ctx.download(
             output = output,
             url = generator_path,
