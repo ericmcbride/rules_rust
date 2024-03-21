@@ -7,8 +7,6 @@ load("//crate_universe:defs.bzl", _crate_universe_crate = "crate")
 load("//crate_universe/private:crates_vendor.bzl", "CRATES_VENDOR_ATTRS", "generate_config_file", "generate_splicing_manifest")
 load("//crate_universe/private:generate_utils.bzl", "render_config")
 load("//crate_universe/private/module_extensions:cargo_bazel_bootstrap.bzl", "get_cargo_bazel_runner")
-load("//crate_universe/private:urls.bzl", "CARGO_BAZEL_URLS")
-load("//rust/platform:triple.bzl", "get_host_triple")
 
 # A list of labels which may be relative (and if so, is within the repo the rule is generated in).
 #
@@ -22,14 +20,6 @@ _OPT_BOOL_VALUES = {
     "off": False,
     "on": True,
 }
-
-CARGO_BAZEL_GENERATOR_SHA256 = "CARGO_BAZEL_GENERATOR_SHA256"
-CARGO_BAZEL_GENERATOR_URL = "CARGO_BAZEL_GENERATOR_URL"
-
-GENERATOR_ENV_VARS = [
-    CARGO_BAZEL_GENERATOR_URL,
-    CARGO_BAZEL_GENERATOR_SHA256,
-]
 
 def optional_bool(doc):
     return attr.string(doc = doc, values = _OPT_BOOL_VALUES.keys(), default = "auto")
@@ -191,49 +181,8 @@ def _generate_hub_and_spokes(module_ctx, cargo_bazel, cfg, annotations):
         else:
             fail("Invalid repo: expected Http or Git to exist for crate %s-%s, got %s" % (name, version, repo))
 
-
-def _get_generator(module_ctx):
-    host_triple = get_host_triple(module_ctx)
-    use_environ = False
-    for var in GENERATOR_ENV_VARS:
-        if var in module_ctx.os.environ:
-            use_environ = True
-
-    output = module_ctx.path("cargo-bazel.exe" if "win" in module_ctx.os.name else "cargo-bazel")
-
-    if use_environ:
-        generator_sha256 = module_ctx.os.environ.get(CARGO_BAZEL_GENERATOR_SHA256)
-        generator_url = module_ctx.os.environ.get(CARGO_BAZEL_GENERATOR_URL)
-    else:
-        generator_sha256 = CARGO_BAZEL_URLS.get(host_triple)
-        generator_url = CARGO_BAZEL_URLS.get(host_triple)
-
-    if not generator_url:
-        fail((
-            "No generator URL was found either in the `CARGO_BAZEL_GENERATOR_URL` " +
-            "environment variable or for the `{}` triple in the `generator_urls` attribute"
-        ).format(host_triple))
-
-    # Download the file into place
-    if generator_sha256:
-        module_ctx.download(
-            output = output,
-            url = generator_url,
-            sha256 = generator_sha256,
-            executable = True,
-        )
-        return output, None
-
-    result = module_ctx.download(
-        output = output,
-        url = generator_url,
-        executable = True,
-    )
-
-    return output
-
 def _crate_impl(module_ctx):
-    cargo_bazel = _get_generator(module_ctx)
+    cargo_bazel = get_cargo_bazel_runner(module_ctx)
     all_repos = []
     for mod in module_ctx.modules:
         module_annotations = {}
