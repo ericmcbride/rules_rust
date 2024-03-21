@@ -212,7 +212,7 @@ def _get_generator(module_ctx):
             url = generator_path,
             executable = True,
         )
-        return result
+        return output
 
     #if not use_environ:
     #    generator = module_ctx.path(Label(output))
