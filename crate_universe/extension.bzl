@@ -196,18 +196,18 @@ def _get_generator(module_ctx):
         if var in module_ctx.os.environ:
             use_environ = True
 
-    output = module_ctx.path("cargo-bazel.exe" if "win" in module_ctx.os.name else "cargo-bazel")
-    print("Output is %s", output)
-    if not use_environ:
-        generator = module_ctx.path(Label(output))
-        print("Generator is %s", generator)
-        for _ in range(1, 100):
-            real_generator = generator.realpath
-            print("Real generator is %s", real_generator)
-            if real_generator == generator:
-                break
-            generator = real_generator
-        return generator
+    generator = module_ctx.path(Label("@cargo_bazel_bootstrap//:cargo-bazel"))
+    print("Output is %s", generator)
+    #if not use_environ:
+    #    generator = module_ctx.path(Label(output))
+    #    print("Generator is %s", generator)
+    #    for _ in range(1, 100):
+    #        real_generator = generator.realpath
+    #        print("Real generator is %s", real_generator)
+    #       if real_generator == generator:
+    #           break
+    #       generator = real_generator
+    #   return generator
 
     return get_cargo_bazel_runner(module_ctx)
 
