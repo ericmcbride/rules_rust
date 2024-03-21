@@ -5,8 +5,9 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("//crate_universe:defs.bzl", _crate_universe_crate = "crate")
 load("//crate_universe/private:crates_vendor.bzl", "CRATES_VENDOR_ATTRS", "generate_config_file", "generate_splicing_manifest")
-load("//crate_universe/private:generate_utils.bzl", "render_config")
+load("//crate_universe/private:generate_utils.bzl", "render_config", "get_generator")
 load("//crate_universe/private/module_extensions:cargo_bazel_bootstrap.bzl", "get_cargo_bazel_runner")
+load("//rust/platform:triple.bzl", "get_host_triple")
 
 # A list of labels which may be relative (and if so, is within the repo the rule is generated in).
 #
@@ -182,7 +183,10 @@ def _generate_hub_and_spokes(module_ctx, cargo_bazel, cfg, annotations):
             fail("Invalid repo: expected Http or Git to exist for crate %s-%s, got %s" % (name, version, repo))
 
 def _crate_impl(module_ctx):
-    cargo_bazel = get_cargo_bazel_runner(module_ctx)
+    # Determine the current host's platform triple
+    host_triple = get_host_triple(repository_ctx)
+
+    cargo_bazel, _ = get_generator(module_ctx)
     all_repos = []
     for mod in module_ctx.modules:
         module_annotations = {}
@@ -194,7 +198,7 @@ def _crate_impl(module_ctx):
 
             # The crate.annotation function can take in either a list or a bool.
             # For the tag-based method, because it has type safety, we have to
-            # split it into two parameters.
+            # split it into two parameters
             if annotation_dict.pop("gen_all_binaries"):
                 annotation_dict["gen_binaries"] = True
             annotation_dict["gen_build_script"] = _OPT_BOOL_VALUES[annotation_dict["gen_build_script"]]
