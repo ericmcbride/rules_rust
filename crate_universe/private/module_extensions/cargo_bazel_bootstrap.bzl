@@ -30,11 +30,8 @@ def get_cargo_bazel_runner(module_ctx):
 
     cargo_path = str(module_ctx.path(Label("@rust_host_tools//:bin/cargo{}".format(binary_ext))))
     rustc_path = str(module_ctx.path(Label("@rust_host_tools//:bin/rustc{}".format(binary_ext))))
-    #cargo_bazel = module_ctx.path("cargo-bazel.exe" if "win" in module_ctx.os.name else "cargo-bazel")
-
-    #if cargo_bazel == "":
     cargo_bazel = module_ctx.path(Label("@cargo_bazel_bootstrap//:cargo-bazel"))
-    print("Cargo bazel is %s", cargo_bazel)
+
     # Placing this as a nested function allows users to call this right at the
     # start of a module extension, thus triggering any restarts as early as
     # possible (since module_ctx.path triggers restarts).
@@ -52,7 +49,6 @@ def get_cargo_bazel_runner(module_ctx):
             environment = dict(CARGO = cargo_path, RUSTC = rustc_path, **env),
             timeout = timeout,
         )
-        print("result is %s", result)
         if result.return_code != 0:
             if result.stdout:
                 print("Stdout:", result.stdout)  # buildifier: disable=print
