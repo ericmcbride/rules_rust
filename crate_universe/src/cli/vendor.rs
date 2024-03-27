@@ -16,6 +16,7 @@ use crate::metadata::FeatureGenerator;
 use crate::metadata::{Annotations, Cargo, Generator, MetadataGenerator, VendorGenerator};
 use crate::rendering::{render_module_label, write_outputs, Renderer};
 use crate::splicing::{generate_lockfile, Splicer, SplicingManifest, WorkspaceMetadata};
+use crate::utils::sanitize_repository_name;
 
 /// Command line options for the `vendor` subcommand
 #[derive(Parser, Debug)]
@@ -182,7 +183,7 @@ pub fn vendor(opt: VendorOptions) -> Result<()> {
         .keys()
         .cloned()
         .map(|p| {
-            let p_str = p.to_str().unwrap().replace("+", "-");
+            let p_str = sanitize_repository_name(p.to_str().unwrap());
             PathBuf::from(p_str)
         })
         .collect();

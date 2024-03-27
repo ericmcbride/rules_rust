@@ -821,9 +821,9 @@ pub(crate) fn write_outputs(
                 .expect("All file paths should have valid directories")
                 .to_str()
                 .expect("All file paths should be strings");
-            if original_path_str.contains("+") {
-                let new_file_path = original_path_str.replace("+", "-");
-                let _ = std::fs::rename(original_path_str, new_file_path)?;
+            if original_path_str.contains('+') {
+                let new_file_path = sanitize_repository_name(original_path_str);
+                std::fs::rename(original_path_str, new_file_path)?;
             }
         }
     }
