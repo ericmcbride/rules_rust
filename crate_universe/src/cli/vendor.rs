@@ -178,7 +178,14 @@ pub fn vendor(opt: VendorOptions) -> Result<()> {
     .render(&context)?;
 
     // Cache the file names for potential use with buildifier
-    let file_names: BTreeSet<PathBuf> = outputs.keys().cloned().collect();
+    let file_names: BTreeSet<PathBuf> = outputs
+        .keys()
+        .loned()
+        .map(|p| {
+            let p_str = p.to_str().unwrap().replace("+", "-");
+            PathBuf::from(p_str)
+        })
+        .collect();
 
     // First ensure vendoring and rendering happen in a clean directory
     let vendor_dir_label = render_module_label(&config.rendering.crates_module_template, "BUILD")?;
