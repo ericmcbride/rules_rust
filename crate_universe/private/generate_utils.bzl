@@ -181,6 +181,9 @@ def collect_crate_annotations(annotations, repository_name):
                         repository_name,
                     ),
                 )
+
+            # "+" isn't valid in a repo name
+            version = version.replace("+", "-")
             id = _crate_id(name, version)
             if id in crate_annotations:
                 fail("Found duplicate entries for {}".format(id))
