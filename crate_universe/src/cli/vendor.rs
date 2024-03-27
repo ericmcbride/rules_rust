@@ -180,7 +180,7 @@ pub fn vendor(opt: VendorOptions) -> Result<()> {
     // Cache the file names for potential use with buildifier
     let file_names: BTreeSet<PathBuf> = outputs
         .keys()
-        .loned()
+        .cloned()
         .map(|p| {
             let p_str = p.to_str().unwrap().replace("+", "-");
             PathBuf::from(p_str)
