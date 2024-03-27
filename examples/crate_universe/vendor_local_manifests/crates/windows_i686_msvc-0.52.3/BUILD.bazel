@@ -6,12 +6,13 @@
 #     bazel run @//vendor_local_manifests:crates_vendor
 ###############################################################################
 
+load("@rules_rust//cargo:defs.bzl", "cargo_build_script")
 load("@rules_rust//rust:defs.bzl", "rust_library")
 
 package(default_visibility = ["//visibility:public"])
 
 rust_library(
-    name = "windows_sys",
+    name = "windows_i686_msvc",
     srcs = glob(
         include = ["**/*.rs"],
         allow_empty = False,
@@ -28,13 +29,6 @@ rust_library(
             "WORKSPACE.bazel",
         ],
     ),
-    crate_features = [
-        "Win32",
-        "Win32_Foundation",
-        "Win32_Storage",
-        "Win32_Storage_FileSystem",
-        "default",
-    ],
     crate_root = "src/lib.rs",
     edition = "2021",
     rustc_flags = [
@@ -42,7 +36,7 @@ rust_library(
     ],
     tags = [
         "cargo-bazel",
-        "crate-name=windows-sys",
+        "crate-name=windows_i686_msvc",
         "manual",
         "noclippy",
         "norustfmt",
@@ -84,8 +78,49 @@ rust_library(
         "@rules_rust//rust/platform:x86_64-unknown-none": [],
         "//conditions:default": ["@platforms//:incompatible"],
     }),
-    version = "0.52.0",
+    version = "0.52.3",
     deps = [
-        "//vendor_local_manifests/crates/windows-targets-0.52.3:windows_targets",
+        "//vendor_local_manifests/crates/windows_i686_msvc-0.52.3:build_script_build",
     ],
+)
+
+cargo_build_script(
+    name = "windows_i686_msvc_bs",
+    srcs = glob(
+        include = ["**/*.rs"],
+        allow_empty = False,
+    ),
+    crate_name = "build_script_build",
+    crate_root = "build.rs",
+    data = glob(
+        include = ["**"],
+        allow_empty = True,
+        exclude = [
+            "**/* *",
+            ".tmp_git_root/**/*",
+            "BUILD",
+            "BUILD.bazel",
+            "WORKSPACE",
+            "WORKSPACE.bazel",
+        ],
+    ),
+    edition = "2021",
+    rustc_flags = [
+        "--cap-lints=allow",
+    ],
+    tags = [
+        "cargo-bazel",
+        "crate-name=windows_i686_msvc",
+        "manual",
+        "noclippy",
+        "norustfmt",
+    ],
+    version = "0.52.3",
+    visibility = ["//visibility:private"],
+)
+
+alias(
+    name = "build_script_build",
+    actual = ":windows_i686_msvc_bs",
+    tags = ["manual"],
 )
