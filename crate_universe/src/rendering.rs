@@ -1721,11 +1721,15 @@ mod test {
         // create tempdir to write to
         let outdir = tempfile::tempdir().unwrap();
         write_outputs(output, outdir.path(), false).unwrap();
-        let expected = format!(
-            "{}/{}",
-            outdir.path().to_str().unwrap(),
-            "libbpf-sys-1.3.0-v1.3.0"
-        );
+        let expected = if cfg!(target_os = "windows") {
+            format!("{}\\{}", "libbpf-sys-1.3.0-v1.3.0")
+        } else {
+            format!(
+                "{}/{}",
+                outdir.path().to_str().unwrap(),
+                "libbpf-sys-1.3.0-v1.3.0"
+            )
+        };
 
         let mut found = false;
         // ensure no files paths have a + sign
