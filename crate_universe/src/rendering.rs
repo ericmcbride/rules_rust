@@ -1680,6 +1680,8 @@ mod test {
         // generate crate for libbpf-sys-1.3.0-v1.3.0
         let mut version = semver::Version::new(1, 3, 0);
         version.build = semver::BuildMetadata::new("v1.3.0").unwrap();
+        // ensure metadata has a +
+        assert!(version.to_string().contains('+'));
         let crate_id = CrateId::new("libbpf-sys".to_owned(), version);
 
         context.crates.insert(
