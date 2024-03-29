@@ -16,7 +16,7 @@ use crate::metadata::FeatureGenerator;
 use crate::metadata::{Annotations, Cargo, Generator, MetadataGenerator, VendorGenerator};
 use crate::rendering::{render_module_label, write_outputs, Renderer};
 use crate::splicing::{generate_lockfile, Splicer, SplicingManifest, WorkspaceMetadata};
-use crate::utils::sanitize_repository_name;
+use crate::utils::sanitize_vendor_file_names;
 
 /// Command line options for the `vendor` subcommand
 #[derive(Parser, Debug)]
@@ -200,14 +200,7 @@ pub fn vendor(opt: VendorOptions) -> Result<()> {
             VendorGenerator::new(cargo, opt.rustc.clone())
                 .generate(manifest_path.as_path_buf(), &vendor_dir)
                 .context("Failed to vendor dependencies")?;
-            outputs
-                .keys()
-                .cloned()
-                .map(|p| {
-                    let p_str = sanitize_repository_name(p.to_str().unwrap());
-                    PathBuf::from(p_str)
-                })
-                .collect()
+            sanitize_vendor_file_names(&outputs)
         } else {
             outputs.keys().cloned().collect()
         };

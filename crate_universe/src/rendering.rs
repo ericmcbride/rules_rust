@@ -823,6 +823,7 @@ pub(crate) fn write_outputs(
                 .expect("All file paths should be strings");
             if original_path_str.contains('+') {
                 let new_file_path = sanitize_repository_name(original_path_str);
+                println!("Are we writing here {:?}", new_file_path);
                 std::fs::rename(original_path_str, new_file_path)?;
             }
         }
@@ -1671,5 +1672,70 @@ mod test {
         assert!(build_file_content
             .replace(' ', "")
             .contains(&expected.replace(' ', "")));
+    }
+
+    #[test]
+    fn write_outputs_semver_metadata() {
+        let mut context = Context::default();
+        // generate crate for libbpf-sys-1.3.0-v1.3.0
+        let mut version = semver::Version::new(1, 3, 0);
+        version.build = semver::BuildMetadata::new("v1.3.0").unwrap();
+        let crate_id = CrateId::new("libbpf-sys".to_owned(), version);
+
+        context.crates.insert(
+            crate_id.clone(),
+            CrateContext {
+                name: crate_id.name,
+                version: crate_id.version,
+                package_url: None,
+                repository: None,
+                targets: BTreeSet::from([Rule::Library(mock_target_attributes())]),
+                library_target_name: None,
+                common_attrs: CommonAttributes::default(),
+                build_script_attrs: None,
+                license: None,
+                license_ids: BTreeSet::default(),
+                license_file: None,
+                additive_build_file_content: None,
+                disable_pipelining: false,
+                extra_aliased_targets: BTreeMap::default(),
+                alias_rule: None,
+            },
+        );
+
+        let mut config = mock_render_config(Some(VendorMode::Local));
+        // change templates so it matches local vendor
+        config.build_file_template = "//{name}-{version}:BUILD.bazel".into();
+
+        // Enable local vendor mode
+        let renderer = Renderer::new(config, mock_supported_platform_triples());
+        let output = renderer.render(&context).unwrap();
+
+        // Local vendoring does not produce a `crate_repositories` macro
+        let defs_module = output.get(&PathBuf::from("defs.bzl")).unwrap();
+        assert!(!defs_module.contains("def crate_repositories():"));
+
+        // Local vendoring does not produce a `crates.bzl` file.
+        assert!(!output.contains_key(&PathBuf::from("crates.bzl")));
+
+        // create tempdir to write to
+        let outdir = tempfile::tempdir().unwrap();
+        write_outputs(output, outdir.path(), false).unwrap();
+        let expected = format!(
+            "{}/{}",
+            outdir.path().to_str().unwrap(),
+            "libbpf-sys-1.3.0-v1.3.0"
+        );
+
+        let mut found = false;
+        // ensure no files paths have a + sign
+        for entry in fs::read_dir(outdir.path()).unwrap() {
+            let path = entry.as_ref().unwrap().path().to_str().unwrap().to_string();
+            if path == expected {
+                found = true;
+            }
+            assert!(!path.contains("+"));
+        }
+        assert!(found)
     }
 }
