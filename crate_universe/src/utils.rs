@@ -20,6 +20,10 @@ pub(crate) fn sanitize_repository_name(name: &str) -> String {
     name.replace('+', "-")
 }
 
+/// We need to sanitize the cargo vendor'ed folder names.  Cargo automatically vendors the crates
+/// based off the semver spec (libfoo-v.1.1.0+MyMeta), thus making bazel labels invalid, since they
+/// dont accept a (+) symbol.  This simpley takes the outputs, and will sanitize the path bufs for
+/// buildifier and for when we write the outputs.
 pub(crate) fn sanitize_vendor_file_names(outputs: &BTreeMap<PathBuf, String>) -> BTreeSet<PathBuf> {
     outputs
         .keys()
@@ -63,14 +67,14 @@ mod test {
     #[test]
     fn test_sanitize_repository_name() {
         let name = "anyhow-1.0.0+semver_meta";
-        let got = sanitize_repository_name(&name);
+        let got = sanitize_repository_name(name);
         assert_eq!(got, String::from("anyhow-1.0.0-semver_meta"));
     }
 
     #[test]
     fn test_sanitize_repository_name_no_change() {
         let name = "tokio-1.20.0";
-        let got = sanitize_repository_name(&name);
+        let got = sanitize_repository_name(name);
         assert_eq!(got, String::from("tokio-1.20.0"));
     }
 }

@@ -1734,7 +1734,7 @@ mod test {
             if path == expected {
                 found = true;
             }
-            assert!(!path.contains("+"));
+            assert!(!path.contains('+'));
         }
         assert!(found)
     }
