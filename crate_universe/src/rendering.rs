@@ -823,7 +823,6 @@ pub(crate) fn write_outputs(
                 .expect("All file paths should be strings");
             if original_path_str.contains('+') {
                 let new_file_path = sanitize_repository_name(original_path_str);
-                println!("Are we writing here {:?}", new_file_path);
                 std::fs::rename(original_path_str, new_file_path)?;
             }
         }
