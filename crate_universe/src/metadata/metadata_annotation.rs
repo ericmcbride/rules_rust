@@ -380,6 +380,7 @@ impl Annotations {
         let metadata_annotation = MetadataAnnotation::new(cargo_metadata);
 
         let mut unused_extra_annotations = config.annotations.clone();
+
         // Ensure each override matches a particular package
         let pairred_extras = metadata_annotation
             .packages
