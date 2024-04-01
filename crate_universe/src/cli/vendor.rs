@@ -16,7 +16,6 @@ use crate::metadata::FeatureGenerator;
 use crate::metadata::{Annotations, Cargo, Generator, MetadataGenerator, VendorGenerator};
 use crate::rendering::{render_module_label, write_outputs, Renderer};
 use crate::splicing::{generate_lockfile, Splicer, SplicingManifest, WorkspaceMetadata};
-use crate::utils::sanitize_vendor_file_names;
 
 /// Command line options for the `vendor` subcommand
 #[derive(Parser, Debug)]
@@ -177,6 +176,7 @@ pub fn vendor(opt: VendorOptions) -> Result<()> {
         config.supported_platform_triples.clone(),
     )
     .render(&context)?;
+
     // Cache the file names for potential use with buildifier
     let file_names: BTreeSet<PathBuf> = outputs.keys().cloned().collect();
 
@@ -194,6 +194,7 @@ pub fn vendor(opt: VendorOptions) -> Result<()> {
             .context("Failed to write Cargo.lock file back to the workspace.")?;
     }
 
+    // Vendor the crates from the spliced workspace
     if matches!(config.rendering.vendor_mode, Some(VendorMode::Local)) {
         VendorGenerator::new(cargo, opt.rustc.clone())
             .generate(manifest_path.as_path_buf(), &vendor_dir)
