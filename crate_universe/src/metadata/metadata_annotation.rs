@@ -204,7 +204,6 @@ impl LockfileAnnotation {
         workspace_metadata: &WorkspaceMetadata,
     ) -> Result<SourceAnnotation> {
         let pkg = &metadata[&node.id];
-
         // Locate the matching lock package for the current crate
         let lock_pkg = match cargo_meta_pkg_to_locked_pkg(pkg, &lockfile.packages) {
             Some(lock_pkg) => lock_pkg,
@@ -228,7 +227,7 @@ impl LockfileAnnotation {
                         patch_args: None,
                         patch_tool: None,
                         patches: None,
-                    })
+                    });
                 }
                 None => bail!(
                     "The package '{:?} {:?}' has no source info so no annotation can be made",
@@ -272,10 +271,11 @@ impl LockfileAnnotation {
         // metadata the raw source info is used for registry crates and `crates.io` is
         // assumed to be the source.
         if source.is_registry() {
+            // source url
             return Ok(SourceAnnotation::Http {
                 url: format!(
-                    "https://crates.io/api/v1/crates/{}/{}/download",
-                    lock_pkg.name, lock_pkg.version,
+                    "https://static.crates.io/crates/{}/{}/download",
+                    lock_pkg.name, lock_pkg.version
                 ),
                 sha256: lock_pkg
                     .checksum
@@ -379,7 +379,6 @@ impl Annotations {
         let metadata_annotation = MetadataAnnotation::new(cargo_metadata);
 
         let mut unused_extra_annotations = config.annotations.clone();
-
         // Ensure each override matches a particular package
         let pairred_extras = metadata_annotation
             .packages
