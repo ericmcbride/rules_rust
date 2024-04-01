@@ -20,49 +20,9 @@ pub(crate) fn sanitize_repository_name(name: &str) -> String {
     name.replace('+', "-")
 }
 
-/// We need to sanitize the cargo vendor'ed folder names.  Cargo automatically vendors the crates
-/// based off the semver spec (libfoo-v.1.1.0+MyMeta), thus making bazel labels invalid, since they
-/// dont accept a (+) symbol.  This simpley takes the outputs, and will sanitize the path bufs for
-/// buildifier and for when we write the outputs.
-pub(crate) fn sanitize_vendor_file_names(outputs: &BTreeMap<PathBuf, String>) -> BTreeSet<PathBuf> {
-    outputs
-        .keys()
-        .cloned()
-        .map(|p| {
-            let p_str = sanitize_repository_name(p.to_str().unwrap());
-            PathBuf::from(p_str)
-        })
-        .collect()
-}
-
 #[cfg(test)]
 mod test {
     use super::*;
-
-    #[test]
-    fn test_sanitize_vendor_file_names() {
-        let mut outputs = BTreeMap::new();
-        outputs.insert(
-            PathBuf::from("/path/to/libbpf-sys-1.3.0+v1.3.0"),
-            "test".into(),
-        );
-
-        let got = sanitize_vendor_file_names(&outputs);
-        for value in got {
-            assert_eq!(value, PathBuf::from("/path/to/libbpf-sys-1.3.0-v1.3.0"))
-        }
-    }
-
-    #[test]
-    fn test_sanitize_vendor_file_names_no_change() {
-        let mut outputs = BTreeMap::new();
-        outputs.insert(PathBuf::from("/path/to/tokio-1.20.0"), "test".into());
-
-        let got = sanitize_vendor_file_names(&outputs);
-        for value in got {
-            assert_eq!(value, PathBuf::from("/path/to/tokio-1.20.0"))
-        }
-    }
 
     #[test]
     fn test_sanitize_repository_name() {

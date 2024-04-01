@@ -283,7 +283,7 @@ impl Renderer {
                 let label = match render_build_file_template(
                     &self.config.build_file_template,
                     &id.name,
-                    &id.version.to_string(),
+                    &id.version.to_string().replace('+', "-"),
                 ) {
                     Ok(label) => label,
                     Err(e) => bail!(e),
@@ -802,6 +802,7 @@ pub(crate) fn write_outputs(
         }
     } else {
         for (path, content) in outputs {
+            // Ensure the output directory exists
             fs::create_dir_all(
                 path.parent()
                     .expect("All file paths should have valid directories"),
@@ -809,22 +810,6 @@ pub(crate) fn write_outputs(
 
             fs::write(&path, content.as_bytes())
                 .context(format!("Failed to write file to disk: {}", path.display()))?;
-
-            // We generated the vendored directories with cargo and not bazel.  cargo puts the
-            // metadata on the semver, which may not be compatible with bazel (+) for example.
-            // So we need to check the paths to see if they contain a +.  If they do we need to
-            // move the directory with all of its contents to a new directory that does not
-            // contain special characters so its compatible with the bazel labels defined
-            // in the generated defs.bzl
-            let original_path_str = path
-                .parent()
-                .expect("All file paths should have valid directories")
-                .to_str()
-                .expect("All file paths should be strings");
-            if original_path_str.contains('+') {
-                let new_file_path = sanitize_repository_name(original_path_str);
-                std::fs::rename(original_path_str, new_file_path)?;
-            }
         }
     }
 
