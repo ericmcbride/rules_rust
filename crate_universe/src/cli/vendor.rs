@@ -178,12 +178,6 @@ pub fn vendor(opt: VendorOptions) -> Result<()> {
     )
     .render(&context)?;
 
-    // make cargo versioned crates compatible with bazel labels
-    let normalized_outputs = normalize_cargo_file_paths(outputs, &opt.workspace_dir);
-
-    // buildifier files to check
-    let file_names: BTreeSet<PathBuf> = normalized_outputs.keys().cloned().collect();
-
     // First ensure vendoring and rendering happen in a clean directory
     let vendor_dir_label = render_module_label(&config.rendering.crates_module_template, "BUILD")?;
     let vendor_dir = opt.workspace_dir.join(vendor_dir_label.package().unwrap());
@@ -203,6 +197,12 @@ pub fn vendor(opt: VendorOptions) -> Result<()> {
             .generate(manifest_path.as_path_buf(), &vendor_dir)
             .context("Failed to vendor dependencies")?;
     }
+
+    // make cargo versioned crates compatible with bazel labels
+    let normalized_outputs = normalize_cargo_file_paths(outputs, &opt.workspace_dir);
+
+    // buildifier files to check
+    let file_names: BTreeSet<PathBuf> = normalized_outputs.keys().cloned().collect();
 
     // Write outputs
     write_outputs(normalized_outputs, opt.dry_run).context("Failed writing output files")?;

@@ -115,13 +115,13 @@ rust_library(
         "@rules_rust//rust/platform:x86_64-unknown-none": [],
         "//conditions:default": ["@platforms//:incompatible"],
     }),
-    version = "1.36.0",
+    version = "1.37.0",
     deps = [
         "//vendor_local_manifests/crates/bytes-1.6.0:bytes",
         "//vendor_local_manifests/crates/mio-0.8.11:mio",
         "//vendor_local_manifests/crates/num_cpus-1.16.0:num_cpus",
         "//vendor_local_manifests/crates/parking_lot-0.12.1:parking_lot",
-        "//vendor_local_manifests/crates/pin-project-lite-0.2.13:pin_project_lite",
+        "//vendor_local_manifests/crates/pin-project-lite-0.2.14:pin_project_lite",
     ] + select({
         "@rules_rust//rust/platform:aarch64-apple-darwin": [
             "//vendor_local_manifests/crates/libc-0.2.153:libc",  # cfg(unix)

@@ -36,7 +36,6 @@ rust_library(
         "parsing",
         "printing",
         "proc-macro",
-        "quote",
         "visit-mut",
     ],
     crate_root = "src/lib.rs",
@@ -88,7 +87,7 @@ rust_library(
         "@rules_rust//rust/platform:x86_64-unknown-none": [],
         "//conditions:default": ["@platforms//:incompatible"],
     }),
-    version = "2.0.55",
+    version = "2.0.58",
     deps = [
         "//vendor_local_manifests/crates/proc-macro2-1.0.79:proc_macro2",
         "//vendor_local_manifests/crates/quote-1.0.35:quote",
