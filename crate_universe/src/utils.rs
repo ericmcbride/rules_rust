@@ -91,4 +91,17 @@ mod test {
             assert!(!output.to_str().unwrap().contains('+'));
         }
     }
+
+    #[test]
+    fn test_normalize_cargo_file_paths_no_rename() {
+        let mut outputs = BTreeMap::new();
+        outputs.insert(PathBuf::from("tokio-1.30.0/BUILD.bazel"), "contents".into());
+
+        let outdir = tempfile::tempdir().unwrap();
+
+        let got = normalize_cargo_file_paths(outputs, outdir.path());
+        for output in got.into_keys() {
+            assert!(!output.to_str().unwrap().contains('+'));
+        }
+    }
 }
