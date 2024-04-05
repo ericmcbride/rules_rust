@@ -16,7 +16,7 @@ use crate::metadata::FeatureGenerator;
 use crate::metadata::{Annotations, Cargo, Generator, MetadataGenerator, VendorGenerator};
 use crate::rendering::{render_module_label, write_outputs, Renderer};
 use crate::splicing::{generate_lockfile, Splicer, SplicingManifest, WorkspaceMetadata};
-use crate::utils::sanitize_vendor_file_names;
+use crate::utils::{normalize_cargo_file_paths, sanitize_vendor_file_names};
 
 /// Command line options for the `vendor` subcommand
 #[derive(Parser, Debug)]
@@ -192,9 +192,6 @@ pub fn vendor(opt: VendorOptions) -> Result<()> {
             .context("Failed to write Cargo.lock file back to the workspace.")?;
     }
 
-    // Vendor the crates from the spliced workspace.  If its a local vendor type, we need
-    // to change the file names for buildifier to work, because of (+). Cache the file names for
-    // potential use with buildifier
     let file_names: BTreeSet<PathBuf> =
         if matches!(config.rendering.vendor_mode, Some(VendorMode::Local)) {
             VendorGenerator::new(cargo, opt.rustc.clone())
@@ -205,9 +202,11 @@ pub fn vendor(opt: VendorOptions) -> Result<()> {
             outputs.keys().cloned().collect()
         };
 
+    // make cargo versioned crates compatible with bazel labels
+    let normalized_outputs = normalize_cargo_file_paths(outputs, &opt.workspace_dir);
+
     // Write outputs
-    write_outputs(outputs, &opt.workspace_dir, opt.dry_run)
-        .context("Failed writing output files")?;
+    write_outputs(normalized_outputs, opt.dry_run).context("Failed writing output files")?;
 
     // Optionally apply buildifier fixes
     if let Some(buildifier_bin) = opt.buildifier {

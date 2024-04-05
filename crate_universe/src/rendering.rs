@@ -4,7 +4,7 @@ mod template_engine;
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::str::FromStr;
 
 use anyhow::{bail, Context as AnyhowContext, Result};
@@ -779,16 +779,7 @@ impl Renderer {
 }
 
 /// Write a set of [crate::context::crate_context::CrateContext] to disk.
-pub(crate) fn write_outputs(
-    outputs: BTreeMap<PathBuf, String>,
-    out_dir: &Path,
-    dry_run: bool,
-) -> Result<()> {
-    let outputs: BTreeMap<PathBuf, String> = outputs
-        .into_iter()
-        .map(|(path, content)| (out_dir.join(path), content))
-        .collect();
-
+pub(crate) fn write_outputs(outputs: BTreeMap<PathBuf, String>, dry_run: bool) -> Result<()> {
     if dry_run {
         for (path, content) in outputs {
             println!(
@@ -810,22 +801,6 @@ pub(crate) fn write_outputs(
 
             fs::write(&path, content.as_bytes())
                 .context(format!("Failed to write file to disk: {}", path.display()))?;
-
-            // We generated the vendored directories with cargo and not bazel.  cargo puts the
-            // metadata on the semver, which may not be compatible with bazel (+) for example.
-            // So we need to check the paths to see if they contain a +.  If they do we need to
-            // move the directory with all of its contents to a new directory that does not
-            // contain special characters so its compatible with the bazel labels defined
-            // in the generated defs.bzl
-            let original_path_str = path
-                .parent()
-                .expect("All file paths should have valid directories")
-                .to_str()
-                .expect("All file paths should be strings");
-            if original_path_str.contains('+') {
-                let new_file_path = sanitize_repository_name(original_path_str);
-                std::fs::rename(original_path_str, new_file_path)?;
-            }
         }
     }
 
