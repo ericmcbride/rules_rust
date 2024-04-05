@@ -40,7 +40,7 @@ pub(crate) fn sanitize_vendor_file_names(outputs: &BTreeMap<PathBuf, String>) ->
 /// always contain a (+) symbol, which is not compatible with bazel's labels.  
 /// This function will rename the cargo vendor generated file paths to be compatible with bazel
 /// labels by simply replacing the (+) with a (-). If this file is called by any other cli mod,
-/// it just simplies joins the out dir to the path
+/// it just simply joins the out dir to the path
 pub(crate) fn normalize_cargo_file_paths(
     outputs: BTreeMap<PathBuf, String>,
     out_dir: &Path,
