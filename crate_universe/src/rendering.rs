@@ -798,7 +798,6 @@ pub(crate) fn write_outputs(outputs: BTreeMap<PathBuf, String>, dry_run: bool) -
                 path.parent()
                     .expect("All file paths should have valid directories"),
             )?;
-
             fs::write(&path, content.as_bytes())
                 .context(format!("Failed to write file to disk: {}", path.display()))?;
         }
@@ -897,6 +896,7 @@ mod test {
     use crate::context::{BuildScriptAttributes, CommonAttributes};
     use crate::metadata::Annotations;
     use crate::test;
+    use crate::utils::normalize_cargo_file_paths;
 
     const VERSION_ZERO_ONE_ZERO: semver::Version = semver::Version::new(0, 1, 0);
 
@@ -1652,9 +1652,9 @@ mod test {
     #[test]
     fn write_outputs_semver_metadata() {
         let mut context = Context::default();
-        // generate crate for libbpf-sys-1.3.0-v1.3.0
-        let mut version = semver::Version::new(1, 3, 0);
-        version.build = semver::BuildMetadata::new("v1.3.0").unwrap();
+        // generate crate for libbpf-sys-1.4.0-v1.4.0
+        let mut version = semver::Version::new(1, 4, 0);
+        version.build = semver::BuildMetadata::new("v1.4.0").unwrap();
         // ensure metadata has a +
         assert!(version.to_string().contains('+'));
         let crate_id = CrateId::new("libbpf-sys".to_owned(), version);
@@ -1687,7 +1687,7 @@ mod test {
         // Enable local vendor mode
         let renderer = Renderer::new(config, mock_supported_platform_triples());
         let output = renderer.render(&context).unwrap();
-
+        eprintln!("output before {:?}", output.keys());
         // Local vendoring does not produce a `crate_repositories` macro
         let defs_module = output.get(&PathBuf::from("defs.bzl")).unwrap();
         assert!(!defs_module.contains("def crate_repositories():"));
@@ -1697,8 +1697,17 @@ mod test {
 
         // create tempdir to write to
         let outdir = tempfile::tempdir().unwrap();
-        write_outputs(output, outdir.path(), false).unwrap();
-        let expected = outdir.path().join("libbpf-sys-1.3.0-v1.3.0");
+
+        // create dir to mimic cargo vendor
+        let _ = std::fs::create_dir_all(outdir.path().join("libbpf-sys-1.4.0+v1.4.0"));
+
+        let normalized_outputs = normalize_cargo_file_paths(output, &outdir.path());
+        eprintln!(
+            "Normalized outputs are {:?}",
+            normalized_outputs.clone().into_keys()
+        );
+        let _ = write_outputs(normalized_outputs, false).unwrap();
+        let expected = outdir.path().join("libbpf-sys-1.4.0-v1.4.0");
         let mut found = false;
         // ensure no files paths have a + sign
         for entry in fs::read_dir(outdir.path()).unwrap() {
@@ -1708,6 +1717,6 @@ mod test {
             }
             assert!(!path_str.contains('+'));
         }
-        assert!(found)
+        assert!(found);
     }
 }
