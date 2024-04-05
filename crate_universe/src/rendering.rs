@@ -1701,12 +1701,13 @@ mod test {
         // create dir to mimic cargo vendor
         let _ = std::fs::create_dir_all(outdir.path().join("libbpf-sys-1.4.0+v1.4.0"));
 
-        let normalized_outputs = normalize_cargo_file_paths(output, &outdir.path());
+        let normalized_outputs = normalize_cargo_file_paths(output, outdir.path());
         eprintln!(
             "Normalized outputs are {:?}",
             normalized_outputs.clone().into_keys()
         );
-        let _ = write_outputs(normalized_outputs, false).unwrap();
+
+        write_outputs(normalized_outputs, false).unwrap();
         let expected = outdir.path().join("libbpf-sys-1.4.0-v1.4.0");
         let mut found = false;
         // ensure no files paths have a + sign

@@ -86,7 +86,7 @@ mod test {
         // create dir to mimic cargo vendor
         std::fs::create_dir_all(outdir.path().join("libbpf-sys-1.3.0+v1.3.0")).unwrap();
 
-        let got = normalize_cargo_file_paths(outputs, &outdir.path());
+        let got = normalize_cargo_file_paths(outputs, outdir.path());
         for output in got.into_keys() {
             assert!(!output.to_str().unwrap().contains('+'));
         }
