@@ -176,7 +176,6 @@ impl Renderer {
         starlark.push(Starlark::Filegroup(filegroup));
 
         // An `alias` for each direct dependency of a workspace member crate.
-        // We need to add feature gated deps here
         let mut dependencies = Vec::new();
         for dep in context.workspace_member_deps() {
             let krate = &context.crates[&dep.id];
@@ -213,6 +212,7 @@ impl Renderer {
                 });
             }
         }
+
         let duplicates: Vec<_> = dependencies
             .iter()
             .map(|alias| &alias.name)
