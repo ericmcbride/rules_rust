@@ -12,7 +12,7 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 use crate::config::CrateId;
-use crate::context::deps::resolve_cfg_features;
+use crate::context::deps::resolve_cfg_deps;
 use crate::context::platforms::resolve_cfg_platforms;
 use crate::lockfile::Digest;
 use crate::metadata::{Annotations, Dependency};
@@ -56,12 +56,12 @@ impl Context {
 
     pub(crate) fn new(annotations: Annotations) -> Result<Self> {
         // Build a map of crate contexts
-        let mut crates: BTreeMap<CrateId, CrateContext> = annotations
+        let crates: BTreeMap<CrateId, CrateContext> = annotations
             .metadata
             .crates
             .values()
             .map(|annotation| {
-                let context = CrateContext::new(
+                let mut context = CrateContext::new(
                     annotation,
                     &annotations.metadata.packages,
                     &annotations.lockfile.crates,
@@ -71,12 +71,13 @@ impl Context {
                     annotations.config.generate_build_scripts,
                 );
                 let id = CrateId::new(context.name.clone(), context.version.clone());
+                resolve_cfg_deps(&mut context);
                 (id, context)
             })
             .collect();
 
         // Check to see if any conditional compilation deps need to be set
-        resolve_cfg_deps(&mut crates);
+        //resolve_cfg_deps(&mut crates);
 
         // Filter for any crate that contains a binary
         let binary_crates: BTreeSet<CrateId> = crates

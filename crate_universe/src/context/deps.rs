@@ -1,7 +1,6 @@
 use crate::config::CrateId;
-use crate::context::{CrateContext, CrateDependency};
+use crate::context::CrateContext;
 use crate::select::Select;
-use std::collections::{BTreeMap, BTreeSet};
 
 /// Allows Dependencies to be resolved during conditional compilations.  An example
 /// of a conditonal compilation would be `tokio` with the unstable flag:
@@ -28,7 +27,68 @@ use std::collections::{BTreeMap, BTreeSet};
 ///    rustc_flags = ["--cfg", "tokio_unstable"],
 /// )
 /// ```
-/// change to crate dependencies inside btreeset
+pub(super) fn resolve_cfg_deps(crate_context: &mut CrateContext) {
+    let rustc_flags = get_cfg_flag_values(crate_context.common_attrs.rustc_flags.values());
+    let crate_id = CrateId::new(crate_context.name.clone(), crate_context.version.clone());
+    let mut new_crate_dependencies = Select::new();
+
+    for (key, crate_feature_dep) in crate_context.common_attrs.deps.items() {
+        if let Some(key) = key {
+            let expr = cfg_expr::Expression::parse(&key);
+            // if the key is not all, any, or not, we ignore it
+            // (this causes an error in cfg-expr)
+            if let Ok(expr) = expr {
+                expr.eval(|pred| match pred {
+                    cfg_expr::Predicate::Flag(f) => {
+                        let flag_string = f.to_string();
+                        if rustc_flags.contains(&flag_string) {
+                            // dont want to accidently re insert the same dep
+                            // as a dep dependency.
+                            if crate_id != crate_feature_dep.id {
+                                new_crate_dependencies.insert(crate_feature_dep.clone(), None);
+                            }
+                        }
+                        true
+                    }
+                    ref _other_type => {
+                        println!("Not a flag {:?}", pred);
+                        false
+                    }
+                });
+            }
+            new_crate_dependencies.insert(crate_feature_dep.clone(), Some(key.clone()));
+        } else {
+            new_crate_dependencies.insert(crate_feature_dep.clone(), None);
+        }
+    }
+
+    crate_context.common_attrs.deps = new_crate_dependencies;
+}
+
+/// We only care about the `--cfg` conditional compilation flags.  
+/// An example of a conditional compilation flag is `--cfg tokio_unstable`
+///
+/// There could be other rustc flags, that are not lead with `--cfg`.
+/// We only want to gather the conditional compilation cfg flags, and return
+/// the values of those flags, so we can do a comparison to see if they exist
+/// in the select dependencies, as a key value of `cfg(tokio_unstable)
+fn get_cfg_flag_values(rustc_flags: Vec<String>) -> Vec<String> {
+    let mut cfg_rustc_flags = vec![];
+    let mut rustc_flags_peekable = rustc_flags.iter().peekable();
+    while let Some(flag) = rustc_flags_peekable.next() {
+        if flag == "--cfg" {
+            match rustc_flags_peekable.peek() {
+                Some(next_flag) => {
+                    cfg_rustc_flags.push(next_flag.to_string());
+                }
+                None => {}
+            }
+        }
+    }
+    cfg_rustc_flags
+}
+
+/*
 pub fn resolve_cfg_deps(crates: &mut BTreeMap<CrateId, CrateContext>) {
     // first we need to iterate and get the rustc flags for each dependency.  Once we get
     // the rustc flags, we need to look at the select optional depedencies.  If they match
@@ -111,4 +171,4 @@ pub fn resolve_cfg_deps(crates: &mut BTreeMap<CrateId, CrateContext>) {
     for (key, new_crate) in new_crates {
         crates.get_mut(&key).unwrap().common_attrs.deps = new_crate;
     }
-}
+}*/
