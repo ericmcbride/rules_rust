@@ -76,9 +76,6 @@ impl Context {
             })
             .collect();
 
-        // Check to see if any conditional compilation deps need to be set
-        //resolve_cfg_deps(&mut crates);
-
         // Filter for any crate that contains a binary
         let binary_crates: BTreeSet<CrateId> = crates
             .iter()
