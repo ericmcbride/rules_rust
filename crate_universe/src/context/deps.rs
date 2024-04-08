@@ -50,7 +50,7 @@ pub(super) fn resolve_cfg_deps(crate_context: &mut CrateContext) {
                         }
                         true
                     }
-                    ref _other_type => {
+                    _ => {
                         println!("Not a flag {:?}", pred);
                         false
                     }
@@ -77,11 +77,8 @@ fn get_cfg_flag_values(rustc_flags: Vec<String>) -> Vec<String> {
     let mut rustc_flags_peekable = rustc_flags.iter().peekable();
     while let Some(flag) = rustc_flags_peekable.next() {
         if flag == "--cfg" {
-            match rustc_flags_peekable.peek() {
-                Some(next_flag) => {
-                    cfg_rustc_flags.push(next_flag.to_string());
-                }
-                None => {}
+            if let Some(next_flag) = rustc_flags_peekable.peek() {
+                cfg_rustc_flags.push(next_flag.to_string());
             }
         }
     }
