@@ -179,9 +179,7 @@ impl Renderer {
         // We need to add feature gated deps here
         let mut dependencies = Vec::new();
         for dep in context.workspace_member_deps() {
-            println!("DEP IS {:?}", dep);
             let krate = &context.crates[&dep.id];
-            println!("Krate is {:#?}", krate);
             let alias_rule = krate
                 .alias_rule
                 .as_ref()
