@@ -1,6 +1,7 @@
 //! Convert annotated metadata into a renderable context
 
 pub(crate) mod crate_context;
+pub(crate) mod deps;
 mod platforms;
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -11,6 +12,7 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 use crate::config::CrateId;
+use crate::context::deps::resolve_cfg_features;
 use crate::context::platforms::resolve_cfg_platforms;
 use crate::lockfile::Digest;
 use crate::metadata::{Annotations, Dependency};
@@ -54,7 +56,7 @@ impl Context {
 
     pub(crate) fn new(annotations: Annotations) -> Result<Self> {
         // Build a map of crate contexts
-        let crates: BTreeMap<CrateId, CrateContext> = annotations
+        let mut crates: BTreeMap<CrateId, CrateContext> = annotations
             .metadata
             .crates
             .values()
@@ -72,6 +74,9 @@ impl Context {
                 (id, context)
             })
             .collect();
+
+        // Check to see if any conditional compilation deps need to be set
+        resolve_cfg_deps(&mut crates);
 
         // Filter for any crate that contains a binary
         let binary_crates: BTreeSet<CrateId> = crates
