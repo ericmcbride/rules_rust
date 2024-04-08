@@ -1,6 +1,6 @@
 module(
     name = "conditional_deps_example",
-    version = "0.0.0"
+    version = "0.0.0",
 )
 
 bazel_dep(name = "platforms", version = "0.0.8")
@@ -30,7 +30,6 @@ crate = use_extension(
     "@rules_rust//crate_universe:extension.bzl",
     "crate",
 )
-
 crate.from_cargo(
     name = "crates",
     cargo_lockfile = "//:Cargo.lock",
@@ -41,9 +40,10 @@ crate.from_cargo(
 crate.annotation(
     crate = "tokio",
     repositories = ["crates"],
+    rustc_flags = [
+        "--cfg",
+        "tokio_unstable",
+    ],
     version = "1.28.0",
-    rustc_flags = ["--cfg", "tokio_unstable"],
 )
-
 use_repo(crate, "crates")
-
