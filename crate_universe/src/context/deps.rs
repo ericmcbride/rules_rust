@@ -11,7 +11,7 @@ use crate::select::Select;
 /// With the crate annotation looking like the following in WORKSPACE or MODULE.bazel
 ///
 /// ## WORKSPACE
-/// ```no_run
+/// ```ignore
 /// annotations = {
 ///     "tokio": [crate.annotation(
 ///         rustc_flags = ["--cfg", "tokio_unstable"],
@@ -19,7 +19,7 @@ use crate::select::Select;
 /// },
 /// ```
 /// ## MODULE.bazel
-/// ```no_run
+/// ```ignore
 /// crate.annotation(
 ///    crate = "tokio",
 ///    repositories = ["crates"],
