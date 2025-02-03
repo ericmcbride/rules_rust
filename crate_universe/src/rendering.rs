@@ -58,7 +58,7 @@ impl Renderer {
         let platforms = self.render_platform_labels(conditions);
         output.extend(self.render_build_files(&engine, context, &platforms)?);
         output.extend(self.render_crates_module(&engine, context, &platforms, generator)?);
-        error!("Output is {:#?}", output);
+        tracing::error!("Output is {:#?}", output);
         eprintln!("Output is {:#?}", output);
         if let Some(vendor_mode) = &self.config.vendor_mode {
             match vendor_mode {
