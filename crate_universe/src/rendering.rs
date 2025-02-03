@@ -867,7 +867,7 @@ impl Renderer {
 
 /// Write a set of [crate::context::crate_context::CrateContext] to disk.
 pub(crate) fn write_outputs(outputs: BTreeMap<PathBuf, String>, dry_run: bool) -> Result<()> {
-    if dry_run {
+    if true {
         for (path, content) in outputs {
             println!(
                 "==============================================================================="
