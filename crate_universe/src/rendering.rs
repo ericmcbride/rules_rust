@@ -867,27 +867,20 @@ impl Renderer {
 
 /// Write a set of [crate::context::crate_context::CrateContext] to disk.
 pub(crate) fn write_outputs(outputs: BTreeMap<PathBuf, String>, dry_run: bool) -> Result<()> {
-    if true {
-        for (path, content) in outputs {
-            println!(
-                "==============================================================================="
-            );
-            println!("{}", path.display());
-            println!(
-                "==============================================================================="
-            );
-            println!("{content}\n");
-        }
-    } else {
-        for (path, content) in outputs {
-            // Ensure the output directory exists
-            fs::create_dir_all(
-                path.parent()
-                    .expect("All file paths should have valid directories"),
-            )?;
-            fs::write(&path, content.as_bytes())
-                .context(format!("Failed to write file to disk: {}", path.display()))?;
-        }
+    for (path, content) in &outputs {
+        println!("===============================================================================");
+        println!("{}", path.display());
+        println!("===============================================================================");
+        println!("{content}\n");
+    }
+    for (path, content) in outputs {
+        // Ensure the output directory exists
+        fs::create_dir_all(
+            path.parent()
+                .expect("All file paths should have valid directories"),
+        )?;
+        fs::write(&path, content.as_bytes())
+            .context(format!("Failed to write file to disk: {}", path.display()))?;
     }
 
     Ok(())
