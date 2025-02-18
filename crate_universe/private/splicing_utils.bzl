@@ -48,7 +48,8 @@ def compile_splicing_manifest(splicing_config, manifests, cargo_config_path, pac
     Returns:
         dict: A dictionary representation of a `cargo_bazel::splicing::SplicingManifest`
     """
-
+        
+    print("Cargo config path during compile splicing {}".format(cargo_config_path))
     # Deserialize information about direct packges
     direct_packages_info = {
         # Ensure the data is using kebab-case as that's what `cargo_toml::DependencyDetail` expects.
@@ -181,7 +182,8 @@ def splice_workspace_manifest(
     spliced_metadata = repository_ctx.path(output_dir.get_child("metadata.json"))
     if not spliced_metadata.exists:
         fail("Metadata file does not exist: " + str(spliced_metadata))
-
+    
+    print("End of splice manifest")
     return struct(
         metadata = spliced_metadata,
         cargo_lock = spliced_lockfile,

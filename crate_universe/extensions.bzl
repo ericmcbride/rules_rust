@@ -639,7 +639,8 @@ def _generate_hub_and_spokes(
             config_path = config_file,
             output_dir = module_ctx.path("{}/{}".format(tag_path, "splicing-output")),
         )
-
+        
+        print("Passed splice outputs")
         # If a cargo lockfile was not provided, use the splicing lockfile.
         if cargo_lockfile == None:
             cargo_lockfile = splice_outputs.cargo_lock
