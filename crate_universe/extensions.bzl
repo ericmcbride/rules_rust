@@ -623,6 +623,11 @@ def _generate_hub_and_spokes(
     # If re-pinning is enabled, gather additional inputs for the generator
     kwargs = dict()
     if repin:
+        print("Module ctx {}".format(module_ctx))
+        print("Cargo bazel fn {}".format(cargo_bazel_fn))
+        print("Splicing manifest {}".format(splicing_manifest))
+        print("config path {}".format(config_file))
+
         module_ctx.report_progress("Splicing Cargo workspace for `{}`".format(cfg.name))
 
         # Generate a top level Cargo workspace and manifest for use in generation

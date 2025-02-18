@@ -456,6 +456,7 @@ def execute_generator(
     Returns:
         struct: The results of `repository_ctx.execute`.
     """
+    print("Execute generator config {}".format(config))
     args = [
         "generate",
         "--cargo-lockfile",

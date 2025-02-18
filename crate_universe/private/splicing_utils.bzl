@@ -166,7 +166,9 @@ def splice_workspace_manifest(
     # Ensure the short hand repin variable is set to the full name.
     if REPIN in repository_ctx.os.environ and CARGO_BAZEL_REPIN not in repository_ctx.os.environ:
         env["CARGO_BAZEL_REPIN"] = repository_ctx.os.environ[REPIN]
-
+    
+    env |= cargo_environ(repository_ctx)
+    print("Env before Splce workspacE {}".format(env))
     cargo_bazel_fn(
         args = arguments,
         env = env,
