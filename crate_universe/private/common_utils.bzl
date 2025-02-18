@@ -173,7 +173,7 @@ def cargo_environ(repository_ctx, isolated = True):
         env.update({
             "CARGO_HOME": str(_cargo_home_path(repository_ctx)),
         })
-
+    print("Env is {}".format(env))
     return env
 
 def parse_alias_rule(value):
