@@ -44,7 +44,9 @@ def execute(repository_ctx, args, env = {}, allow_fail = False, quiet = True):
 
     if repository_ctx.os.environ.get(CARGO_BAZEL_DEBUG, None):
         quiet = False
-
+    
+    print("Env for execute {}".format(env))
+    print("Args for executre {}".format(args))
     result = repository_ctx.execute(
         args,
         environment = env,
