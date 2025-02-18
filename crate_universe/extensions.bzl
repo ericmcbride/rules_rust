@@ -592,8 +592,10 @@ def _generate_hub_and_spokes(
             repository_ctx = module_ctx,
         ),
     )
-
+    
     splicing_manifest = tag_path.get_child("splicing_manifest.json")
+    print("CONFIG PATH: {}".format(cfg.cargo_config))
+
     module_ctx.file(
         splicing_manifest,
         executable = False,
@@ -605,7 +607,6 @@ def _generate_hub_and_spokes(
             manifest_to_path = module_ctx.path,
         ),
     )
-
     # TODO: Repins should never be allowed if the lockfile is not within
     # https://github.com/bazelbuild/rules_rust/issues/1738
 
