@@ -169,7 +169,7 @@ def splice_workspace_manifest(
         env["CARGO_BAZEL_REPIN"] = repository_ctx.os.environ[REPIN]
     
     env |= cargo_environ(repository_ctx)
-    print("Env before Splce workspacE {}".format(env))
+    print("Env before Splce workspace {}".format(env))
     cargo_bazel_fn(
         args = arguments,
         env = env,

@@ -141,6 +141,7 @@ impl TryFrom<SplicingManifest> for SplicingMetadata {
             None => None,
         };
 
+        traacing::info!("======= SPLICE CONFIG {:?}", cargo_config);
         Ok(Self {
             direct_packages,
             manifests,
@@ -345,6 +346,7 @@ impl WorkspaceMetadata {
                             CrateIndexLookup::Git(index)
                         }
                         SourceKind::SparseRegistry => {
+                            tracing::info!("==== Hitting index url {:?}===", index_url);
                             CrateIndexLookup::Http(crates_index::SparseIndex::from_url(
                                 format!("sparse+{}", index_url).as_str(),
                             )?)
@@ -362,7 +364,7 @@ impl WorkspaceMetadata {
             })
             .collect::<Result<BTreeMap<String, _>>>()
             .context("Failed to locate crate indexes")?;
-
+        tracing::info!("==== ALL CRATES INDEX {:?}", crates_indexes);
         // Get the download URL of each package based on it's registry url.
         let additional_sources = pkg_sources
             .iter()
