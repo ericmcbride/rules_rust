@@ -114,6 +114,7 @@ impl Cargo {
     /// Returns a new `Command` for running this cargo.
     pub(crate) fn command(&self) -> Result<Command> {
         let mut command = Command::new(&self.path);
+        tracing::info!("Self env is {:?}", self.env());
         command.envs(self.env()?);
         if self.is_nightly()? {
             command.arg("-Zbindeps");
@@ -126,6 +127,7 @@ impl Cargo {
         let mut command = MetadataCommand::new();
         command.cargo_path(&self.path);
         for (k, v) in self.env()? {
+            tracing::info!("K is {:?}, V is {:?}", k, v);
             command.env(k, v);
         }
         Ok(command)
