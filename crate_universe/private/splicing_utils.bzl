@@ -171,7 +171,7 @@ def splice_workspace_manifest(repository_ctx, generator, cargo_lockfile, splicin
 
     # Add any Cargo environment variables to the `cargo-bazel` execution
     env |= cargo_environ(repository_ctx)
-
+    print("ENVS ARE {}".format(env))
     execute(
         repository_ctx = repository_ctx,
         args = arguments,
