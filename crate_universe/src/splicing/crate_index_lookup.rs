@@ -10,6 +10,7 @@ pub(crate) enum CrateIndexLookup {
 
 impl CrateIndexLookup {
     pub(crate) fn get_source_info(&self, pkg: &cargo_lock::Package) -> Result<Option<SourceInfo>> {
+        tracing::debug!("Getting source info");
         let index_config = self
             .index_config()
             .context("Failed to get crate index config")?;

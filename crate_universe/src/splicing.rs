@@ -262,6 +262,7 @@ impl WorkspaceMetadata {
         input_manifest_path: &Utf8Path,
         output_manifest_path: &Utf8Path,
     ) -> Result<()> {
+        tracing::info!("Are we getting to write registry urls");
         let mut manifest = read_manifest(input_manifest_path)?;
 
         let mut workspace_metaata = WorkspaceMetadata::try_from(
@@ -290,8 +291,8 @@ impl WorkspaceMetadata {
                 let source = pkg.source.as_ref().unwrap();
                 (source.kind().clone(), source.url().to_string())
             })
+            .inspect(|x| tracing::debug!("pkg is {:?}", x))
             .collect();
-
         // Load the cargo config
         let cargo_config = {
             // Note that this path must match the one defined in `splicing::setup_cargo_config`
@@ -302,13 +303,14 @@ impl WorkspaceMetadata {
                 .join("config.toml");
 
             if config_path.exists() {
+                tracing::info!("config path exists");
                 Some(CargoConfig::try_from_path(config_path.as_std_path())?)
             } else {
+                tracing::info!("No config path");
                 None
             }
         };
 
-        panic!("Are we getting here");
         // Load each index for easy access
         let crate_indexes = index_urls
             .into_iter()

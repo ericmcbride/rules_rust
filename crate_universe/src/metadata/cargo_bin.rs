@@ -54,6 +54,7 @@ impl Cargo {
         let mut command = MetadataCommand::new();
         command.cargo_path(&self.path);
         for (k, v) in self.env()? {
+            tracing::debug!("K and V are {}", k);
             command.env(k, v);
         }
 
@@ -71,6 +72,7 @@ impl Cargo {
             other_options.push("-Zbindeps".to_owned());
         }
         command.other_options(other_options);
+        tracing::debug!("comand is {:?}", command);
         Ok(command)
     }
 
