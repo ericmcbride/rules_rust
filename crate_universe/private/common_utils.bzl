@@ -44,12 +44,15 @@ def execute(repository_ctx, args, env = {}, allow_fail = False):
     quiet = repository_ctx.attr.quiet
     if repository_ctx.os.environ.get(CARGO_BAZEL_DEBUG, None):
         quiet = False
-
+    
+    print("Args are {}".format(args))
+    print("env are {}".format(args))
     result = repository_ctx.execute(
         args,
         environment = env,
         quiet = quiet,
     )
+    
 
     if result.return_code and not allow_fail:
         fail(_EXECUTE_ERROR_MESSAGE.format(
