@@ -139,7 +139,7 @@ impl TryFrom<SplicingManifest> for SplicingMetadata {
             ),
             None => None,
         };
-
+        println!("===== CARGO CONFIG {:?}", cargo_config);
         Ok(Self {
             direct_packages,
             manifests,
