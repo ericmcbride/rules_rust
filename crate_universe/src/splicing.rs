@@ -87,7 +87,7 @@ impl SplicingManifest {
                 .replace("${output_base}", &output_base_str);
             Utf8PathBuf::from(resolved_path)
         });
-
+        tracing::info!("====Cargo config is {:?}", cargo_config);
         Self {
             manifests,
             cargo_config,
@@ -329,6 +329,7 @@ impl WorkspaceMetadata {
                 } else {
                     match source_kind {
                         SourceKind::Registry => {
+                            tracing::info!("==== Hitting registry index url {:?}===", index_url);
                             let index = {
                                 // Load the index for the current url
                                 let index = crates_index::GitIndex::from_url(index_url)
@@ -346,7 +347,7 @@ impl WorkspaceMetadata {
                             CrateIndexLookup::Git(index)
                         }
                         SourceKind::SparseRegistry => {
-                            tracing::info!("==== Hitting index url {:?}===", index_url);
+                            tracing::info!("==== Hitting sparse index url {:?}===", index_url);
                             CrateIndexLookup::Http(crates_index::SparseIndex::from_url(
                                 format!("sparse+{}", index_url).as_str(),
                             )?)
@@ -364,7 +365,7 @@ impl WorkspaceMetadata {
             })
             .collect::<Result<BTreeMap<String, _>>>()
             .context("Failed to locate crate indexes")?;
-        tracing::info!("==== ALL CRATES INDEX {:?}", crate_indexes);
+
         // Get the download URL of each package based on it's registry url.
         let additional_sources = pkg_sources
             .iter()
