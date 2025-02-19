@@ -36,6 +36,7 @@ impl Cargo {
     /// Returns a new `Command` for running this cargo.
     pub(crate) fn command(&self) -> Result<Command> {
         let mut command = Command::new(&self.path);
+        tracing::info!("The cargo envs are {:?}", self.env());
         command.envs(self.env()?);
         if self.is_nightly()? {
             command.arg("-Zbindeps");
@@ -122,12 +123,10 @@ impl Cargo {
 
         map.insert("RUSTC".into(), self.rustc_path.as_os_str().to_owned());
 
-        if self.use_sparse_registries_for_crates_io()? {
-            map.insert(
-                "CARGO_REGISTRIES_CRATES_IO_PROTOCOL".into(),
-                "sparse".into(),
-            );
-        }
+        map.insert(
+            "CARGO_REGISTRIES_CRATES_IO_PROTOCOL".into(),
+            "sparse".into(),
+        );
 
         if let Some(cargo_home) = &self.cargo_home {
             map.insert("CARGO_HOME".into(), cargo_home.as_os_str().to_owned());
