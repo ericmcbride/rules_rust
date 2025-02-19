@@ -610,7 +610,7 @@ def _generate_hub_and_spokes(
     # TODO: Repins should never be allowed if the lockfile is not within
     # https://github.com/bazelbuild/rules_rust/issues/1738
     
-    print("Config file {:?}".format(config_file))
+    print("Config file {}".format(config_file))
     # Determine whether or not to repin dependencies
     repin = not lockfile or determine_repin(
         repository_ctx = module_ctx,
