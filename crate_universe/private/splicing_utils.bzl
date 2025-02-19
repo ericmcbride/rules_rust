@@ -84,7 +84,7 @@ def create_splicing_manifest(repository_ctx):
     Returns:
         path: The path to a json encoded manifest
     """
-
+    print("Repository ctx {}".format(repository_ctx.attr.manifests))
     manifests = {str(repository_ctx.path(m)): _no_at_label(m) for m in repository_ctx.attr.manifests}
 
     if repository_ctx.attr.cargo_config:
@@ -94,7 +94,7 @@ def create_splicing_manifest(repository_ctx):
 
     # Load user configurable splicing settings
     config = json.decode(repository_ctx.attr.splicing_config or splicing_config())
-
+    print("Config is {}".format(config))
     splicing_manifest = repository_ctx.path("splicing_manifest.json")
 
     data = compile_splicing_manifest(
@@ -183,7 +183,7 @@ def splice_workspace_manifest(
     if not spliced_metadata.exists:
         fail("Metadata file does not exist: " + str(spliced_metadata))
     
-    print("End of splice manifest")
+    print("End of splice manifest {}{}".format(spliced_metadata, spliced_lockfile))
     return struct(
         metadata = spliced_metadata,
         cargo_lock = spliced_lockfile,

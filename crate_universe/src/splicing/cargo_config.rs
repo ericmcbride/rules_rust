@@ -107,6 +107,7 @@ impl FromStr for CargoConfig {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let incoming: CargoConfig = toml::from_str(s)?;
         let mut config = Self::default();
+        tracing::info!("Incoming registries {:?}", incoming.registries);
         config.registries.extend(incoming.registries);
         config.source.extend(incoming.source);
         config.registry = incoming.registry;
