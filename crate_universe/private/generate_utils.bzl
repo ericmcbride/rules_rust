@@ -385,6 +385,15 @@ def determine_repin(
     # If a deterministic lockfile was not added then always repin
     if not lockfile_path:
         return True
+    
+    #env = {
+    #    "CARGO": str(cargo),
+    #    "RUSTC": str(rustc),
+    #    "RUST_BACKTRACE": "full",
+    #}
+    #     # Add any Cargo environment variables to the `cargo-bazel` execution
+    #     env.update(cargo_environ(repository_ctx))
+
 
     # Run the binary to check if a repin is needed
     result = cargo_bazel_fn(

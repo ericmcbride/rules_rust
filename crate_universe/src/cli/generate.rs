@@ -101,7 +101,7 @@ pub struct GenerateOptions {
 pub fn generate(opt: GenerateOptions) -> Result<()> {
     // Load the config
     let config = Config::try_from_path(&opt.config)?;
-
+    println!("===== CONFIG IS {:?}", config);
     // Go straight to rendering if there is no need to repin
     if !opt.repin {
         if let Some(lockfile) = &opt.lockfile {

@@ -538,7 +538,7 @@ def _collect_splicing_config(module, repository):
             config_kwargs.pop("repositories")
 
         config = json.decode(generate_splicing_config(**config_kwargs))
-
+        print("Config for splciing is {}".format(config))
     if not config:
         config = json.decode(generate_splicing_config())
 
@@ -630,7 +630,7 @@ def _generate_hub_and_spokes(
         print("config path {}".format(config_file))
 
         module_ctx.report_progress("Splicing Cargo workspace for `{}`".format(cfg.name))
-
+        
         # Generate a top level Cargo workspace and manifest for use in generation
         splice_outputs = splice_workspace_manifest(
             repository_ctx = module_ctx,
@@ -996,6 +996,8 @@ def _crate_impl(module_ctx):
                 p.package: _package_to_json(p)
                 for p in common_specs + repo_specific_specs.get(cfg.name, [])
             }
+            
+            print("Packages are {}".format(packages))
 
             _generate_hub_and_spokes(
                 module_ctx = module_ctx,
