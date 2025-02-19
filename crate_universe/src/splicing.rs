@@ -308,6 +308,7 @@ impl WorkspaceMetadata {
             }
         };
 
+        panic!("Are we getting here");
         // Load each index for easy access
         let crate_indexes = index_urls
             .into_iter()
@@ -325,6 +326,7 @@ impl WorkspaceMetadata {
                         "sparse+https://index.crates.io/",
                     )?)
                 } else if index_url.starts_with("sparse+") {
+                    tracing::info!("Are we here in sparse land {:?}", index_url);
                     CrateIndexLookup::Http(crates_index::SparseIndex::from_url(index_url)?)
                 } else {
                     match source_kind {
