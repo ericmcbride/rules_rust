@@ -10,6 +10,7 @@ pub(crate) enum CrateIndexLookup {
 
 impl CrateIndexLookup {
     pub(crate) fn get_source_info(&self, pkg: &cargo_lock::Package) -> Result<Option<SourceInfo>> {
+        tracing::info!("==== Cargo Package is {:?}", pkg);
         let index_config = self
             .index_config()
             .context("Failed to get crate index config")?;
@@ -45,8 +46,16 @@ impl CrateIndexLookup {
     #[allow(clippy::result_large_err)]
     fn index_config(&self) -> Result<IndexConfig, crates_index::Error> {
         match self {
-            Self::Git(index) => index.index_config(),
-            Self::Http(index) => index.index_config(),
+            Self::Git(index) => {
+                let c = index.index_config();
+                tracing::info!("git Index config is {:?}", c);
+                c
+            }
+            Self::Http(index) => {
+                let c = index.index_config();
+                tracing::info!("git Index config is {:?}", c);
+                c
+            }
         }
     }
 }
