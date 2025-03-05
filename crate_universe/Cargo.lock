@@ -326,7 +326,7 @@ dependencies = [
 [[package]]
 name = "crates-index"
 version = "3.6.0"
-source = "git+https://github.com/ericmcbride/rust-crates-index?branch=fix-sparse-index#d993be515dcb18433b022fea5e8f48be9e34705c"
+source = "git+https://github.com/ericmcbride/rust-crates-index?branch=fix-sparse-index#8478a5ae4b60162591a32a139d0e93e615e38e7f"
 dependencies = [
  "gix",
  "hex",
