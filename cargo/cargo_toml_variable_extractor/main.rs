@@ -86,9 +86,7 @@ fn print_manifest_env_vars(
     {
         version
     } else {
-        let version =
-            &semver::Version::parse("0.0.0").expect("Known-good version 0.0.0 couldn't be parsed");
-        version
+        semver::Version::parse("0.0.0").expect("Known-good version 0.0.0 couldn't be parsed");
     };
 
     print_env_str(out, "CARGO_PKG_VERSION", &version.to_string());
