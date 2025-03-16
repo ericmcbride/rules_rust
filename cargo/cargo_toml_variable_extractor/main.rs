@@ -87,7 +87,7 @@ fn print_manifest_env_vars(
     {
         version
     } else {
-        &defauilt_version
+        &default_version
     };
 
     print_env_str(out, "CARGO_PKG_VERSION", &version.to_string());
