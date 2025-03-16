@@ -223,6 +223,7 @@ def _write_splicing_manifest(ctx):
             packages = ctx.attr.packages,
             splicing_config = splicing_config,
             cargo_config = ctx.attr.cargo_config,
+            cargo_creds = ctx.attr.cargo_creds,
             manifests = manifests,
             manifest_to_path = _prepare_manifest_path,
         ),
@@ -232,10 +233,10 @@ def _write_splicing_manifest(ctx):
 
     env = [_sys_runfile_env(ctx, "SPLICING_MANIFEST", manifest, is_windows)]
     args = ["--splicing-manifest", _expand_env("SPLICING_MANIFEST", is_windows)]
-    runfiles = [manifest] + ctx.files.manifests + ([ctx.file.cargo_config] if ctx.attr.cargo_config else [])
+    runfiles = [manifest] + ctx.files.manifests + ([ctx.file.cargo_config] if ctx.attr.cargo_config else []) + ([ctx.file.cargo_creds] if ctx.attr.cargo_creds else [])
     return args, env, runfiles
 
-def generate_splicing_manifest(*, packages, splicing_config, cargo_config, manifests, manifest_to_path):
+def generate_splicing_manifest(*, packages, splicing_config, cargo_config, cargo_creds, manifests, manifest_to_path):
     # Deserialize information about direct packages
     direct_packages_info = {
         # Ensure the data is using kebab-case as that's what `cargo_toml::DependencyDetail` expects.
@@ -245,6 +246,7 @@ def generate_splicing_manifest(*, packages, splicing_config, cargo_config, manif
 
     splicing_manifest_content = {
         "cargo_config": str(manifest_to_path(cargo_config)) if cargo_config else None,
+        "cargo_creds": str(manifest_to_path(cargo_creds)) if cargo_creds else None,
         "direct_packages": direct_packages_info,
         "manifests": manifests,
     }
@@ -383,6 +385,7 @@ def generate_config_file(
         generate_build_scripts = generate_build_scripts,
         generate_target_compatible_with = generate_target_compatible_with,
         cargo_config = None,
+        cargo_creds = None,
         render_config = render_config,
         supported_platform_triples = supported_platform_triples,
         repository_name = repository_name or ctx.label.name,
@@ -510,6 +513,10 @@ CRATES_VENDOR_ATTRS = {
         doc = "A [Cargo configuration](https://doc.rust-lang.org/cargo/reference/config.html) file.",
         allow_single_file = True,
     ),
+    "cargo_creds": attr.label(
+        doc = "A [Cargo credentials](https://doc.rust-lang.org/cargo/reference/config.html#credentials) file."
+        allow_single_file = True,
+    )
     "cargo_lockfile": attr.label(
         doc = "The path to an existing `Cargo.lock` file",
         allow_single_file = True,

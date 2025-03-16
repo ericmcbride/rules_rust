@@ -209,6 +209,12 @@ def _read_cargo_config(repository_ctx):
         return repository_ctx.read(config)
     return None
 
+def _read_cargo_creds(repository_ctx):
+    if repository_ctx.attr.cargo_creds:
+        creds = repository_ctx.path(repositroy_ctx.attr.cargo_creds)
+        return repository_ctx.read(creds)
+    return None
+
 def _update_render_config(config, repository_name):
     """Add the repository name to the render config
 
@@ -244,6 +250,7 @@ def compile_config(
         generate_build_scripts,
         generate_target_compatible_with,
         cargo_config,
+        cargo_creds,
         render_config,
         supported_platform_triples,
         repository_name,
@@ -259,6 +266,7 @@ def compile_config(
         generate_build_scripts (bool): Whether or not to globally disable build scripts.
         generate_target_compatible_with (bool): DEPRECATED: Moved to `render_config`.
         cargo_config (str): The optional contents of a [Cargo config][cargo_config].
+        cargo_creds (str): The optional contents of a Cargo Credentials File.
         render_config (dict): The deserialized dict of the `render_config` function.
         supported_platform_triples (list): A list of platform triples
         repository_name (str): The name of the repository being generated
@@ -298,6 +306,7 @@ def compile_config(
         generate_build_scripts = generate_build_scripts,
         annotations = annotations,
         cargo_config = cargo_config,
+        cargo_creds = cargo_creds,
         rendering = _update_render_config(
             config = render_config,
             repository_name = repository_name,
@@ -323,6 +332,7 @@ def generate_config(repository_ctx):
         generate_build_scripts = repository_ctx.attr.generate_build_scripts,
         generate_target_compatible_with = repository_ctx.attr.generate_target_compatible_with,
         cargo_config = _read_cargo_config(repository_ctx),
+        cargo_creds = _read_cargo_creds(repository_ctx) 
         render_config = _get_render_config(repository_ctx),
         supported_platform_triples = repository_ctx.attr.supported_platform_triples,
         repository_name = repository_ctx.name,
