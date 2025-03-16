@@ -26,7 +26,7 @@ There are some examples of using crate_universe with bzlmod in the [example fold
 To use rules_rust in a project using bzlmod, add the following to your MODULE.bazel file:
 
 ```python
-bazel_dep(name = "rules_rust", version = "0.58.0")
+bazel_dep(name = "rules_rust", version = "0.59.1")
 ```
 
 You find the latest version on the [release page](https://github.com/bazelbuild/rules_rust/releases).
@@ -243,7 +243,7 @@ module(
 bazel_dep(name = "bazel_skylib", version = "1.7.1")
 
 # https://github.com/bazelbuild/rules_rust/releases
-bazel_dep(name = "rules_rust", version = "0.58.0")
+bazel_dep(name = "rules_rust", version = "0.59.1")
 
 ###############################################################################
 # T O O L C H A I N S
@@ -713,9 +713,9 @@ def _generate_hub_and_spokes(
             version = version.replace("+", "-"),
         )
 
-        build_file_content = module_ctx.read(crates_dir.get_child("BUILD.%s-%s.bazel" % (name, version)))
         if "Http" in repo:
             # Replicates functionality in repo_http.j2.
+            build_file_content = module_ctx.read(crates_dir.get_child("BUILD.%s-%s.bazel" % (name, version)))
             repo = repo["Http"]
             http_archive(
                 name = crate_repo_name,
@@ -731,6 +731,7 @@ def _generate_hub_and_spokes(
             )
         elif "Git" in repo:
             # Replicates functionality in repo_git.j2
+            build_file_content = module_ctx.read(crates_dir.get_child("BUILD.%s-%s.bazel" % (name, version)))
             repo = repo["Git"]
             kwargs = {}
             for k, v in repo["commitish"].items():
@@ -1108,6 +1109,9 @@ _annotation = tag_class(
         "compile_data_glob": attr.string_list(
             doc = "A list of glob patterns to add to a crate's `rust_library::compile_data` attribute.",
         ),
+        "compile_data_glob_excludes": attr.string_list(
+            doc = "A list of glob patterns to be excllued from a crate's `rust_library::compile_data` attribute.",
+        ),
         "crate": attr.string(
             doc = "The name of the crate the annotation is applied to",
             mandatory = True,
@@ -1308,6 +1312,10 @@ can be found below where the supported keys for each template can be found in th
         "default_package_name": attr.string(
             doc = "The default package name to use in the rendered macros. This affects the auto package detection of things like `all_crate_deps`.",
             default = "",
+        ),
+        "generate_cargo_toml_env_vars": attr.bool(
+            doc = "Whether to generate cargo_toml_env_vars targets.",
+            default = True,
         ),
         "generate_rules_license_metadata": attr.bool(
             doc = "Whether to generate rules license metedata.",
