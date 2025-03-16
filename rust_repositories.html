@@ -209,7 +209,7 @@ rust_analyzer_toolchain_repository(<a href="#rust_analyzer_toolchain_repository-
 <pre>
 load("@rules_rust//rust:repositories.bzl", "rust_register_toolchains")
 
-rust_register_toolchains(<a href="#rust_register_toolchains-dev_components">dev_components</a>, <a href="#rust_register_toolchains-edition">edition</a>, <a href="#rust_register_toolchains-allocator_library">allocator_library</a>, <a href="#rust_register_toolchains-global_allocator_library">global_allocator_library</a>,
+rust_register_toolchains(*, <a href="#rust_register_toolchains-dev_components">dev_components</a>, <a href="#rust_register_toolchains-edition">edition</a>, <a href="#rust_register_toolchains-allocator_library">allocator_library</a>, <a href="#rust_register_toolchains-global_allocator_library">global_allocator_library</a>,
                          <a href="#rust_register_toolchains-register_toolchains">register_toolchains</a>, <a href="#rust_register_toolchains-rustfmt_version">rustfmt_version</a>, <a href="#rust_register_toolchains-rust_analyzer_version">rust_analyzer_version</a>, <a href="#rust_register_toolchains-sha256s">sha256s</a>,
                          <a href="#rust_register_toolchains-extra_target_triples">extra_target_triples</a>, <a href="#rust_register_toolchains-extra_rustc_flags">extra_rustc_flags</a>, <a href="#rust_register_toolchains-extra_exec_rustc_flags">extra_exec_rustc_flags</a>, <a href="#rust_register_toolchains-urls">urls</a>,
                          <a href="#rust_register_toolchains-versions">versions</a>, <a href="#rust_register_toolchains-aliases">aliases</a>, <a href="#rust_register_toolchains-hub_name">hub_name</a>, <a href="#rust_register_toolchains-compact_windows_names">compact_windows_names</a>, <a href="#rust_register_toolchains-toolchain_triples">toolchain_triples</a>,
@@ -244,8 +244,8 @@ rust_register_toolchains(<a href="#rust_register_toolchains-dev_components">dev_
 <tr><td style="text-align: left"><a id="rust_register_toolchains-aliases"></a>aliases</td><td style="text-align: left">A mapping of "full" repository name to another name to use instead.</td><td style="text-align: left"><code>{}</code></td></tr>
 <tr><td style="text-align: left"><a id="rust_register_toolchains-hub_name"></a>hub_name</td><td style="text-align: left">The name of the bzlmod hub repository for toolchains.</td><td style="text-align: left"><code>None</code></td></tr>
 <tr><td style="text-align: left"><a id="rust_register_toolchains-compact_windows_names"></a>compact_windows_names</td><td style="text-align: left">Whether or not to produce compact repository names for windows toolchains. This is to avoid MAX_PATH issues.</td><td style="text-align: left"><code>True</code></td></tr>
-<tr><td style="text-align: left"><a id="rust_register_toolchains-toolchain_triples"></a>toolchain_triples</td><td style="text-align: left">Mapping of rust target triple -&gt; repository name to create.</td><td style="text-align: left"><code>{"aarch64-apple-darwin": "rust_macos_aarch64", "aarch64-pc-windows-msvc": "rust_windows_aarch64", "aarch64-unknown-linux-gnu": "rust_linux_aarch64", "s390x-unknown-linux-gnu": "rust_linux_s390x", "x86_64-apple-darwin": "rust_macos_x86_64", "x86_64-pc-windows-msvc": "rust_windows_x86_64", "x86_64-unknown-freebsd": "rust_freebsd_x86_64", "x86_64-unknown-linux-gnu": "rust_linux_x86_64"}</code></td></tr>
-<tr><td style="text-align: left"><a id="rust_register_toolchains-rustfmt_toolchain_triples"></a>rustfmt_toolchain_triples</td><td style="text-align: left">Like toolchain_triples, but for rustfmt toolchains.</td><td style="text-align: left"><code>{"aarch64-apple-darwin": "rust_macos_aarch64", "aarch64-pc-windows-msvc": "rust_windows_aarch64", "aarch64-unknown-linux-gnu": "rust_linux_aarch64", "s390x-unknown-linux-gnu": "rust_linux_s390x", "x86_64-apple-darwin": "rust_macos_x86_64", "x86_64-pc-windows-msvc": "rust_windows_x86_64", "x86_64-unknown-freebsd": "rust_freebsd_x86_64", "x86_64-unknown-linux-gnu": "rust_linux_x86_64"}</code></td></tr>
+<tr><td style="text-align: left"><a id="rust_register_toolchains-toolchain_triples"></a>toolchain_triples</td><td style="text-align: left">Mapping of rust target triple -&gt; repository name to create.</td><td style="text-align: left"><code>{"aarch64-apple-darwin": "rust_macos_aarch64", "aarch64-pc-windows-msvc": "rust_windows_aarch64", "aarch64-unknown-linux-gnu": "rust_linux_aarch64", "powerpc64le-unknown-linux-gnu": "rust_linux_powerpc64le", "s390x-unknown-linux-gnu": "rust_linux_s390x", "x86_64-apple-darwin": "rust_macos_x86_64", "x86_64-pc-windows-msvc": "rust_windows_x86_64", "x86_64-unknown-freebsd": "rust_freebsd_x86_64", "x86_64-unknown-linux-gnu": "rust_linux_x86_64"}</code></td></tr>
+<tr><td style="text-align: left"><a id="rust_register_toolchains-rustfmt_toolchain_triples"></a>rustfmt_toolchain_triples</td><td style="text-align: left">Like toolchain_triples, but for rustfmt toolchains.</td><td style="text-align: left"><code>{"aarch64-apple-darwin": "rust_macos_aarch64", "aarch64-pc-windows-msvc": "rust_windows_aarch64", "aarch64-unknown-linux-gnu": "rust_linux_aarch64", "powerpc64le-unknown-linux-gnu": "rust_linux_powerpc64le", "s390x-unknown-linux-gnu": "rust_linux_s390x", "x86_64-apple-darwin": "rust_macos_x86_64", "x86_64-pc-windows-msvc": "rust_windows_x86_64", "x86_64-unknown-freebsd": "rust_freebsd_x86_64", "x86_64-unknown-linux-gnu": "rust_linux_x86_64"}</code></td></tr>
 <tr><td style="text-align: left"><a id="rust_register_toolchains-extra_toolchain_infos"></a>extra_toolchain_infos</td><td style="text-align: left">(dict[str, dict], optional): Mapping of information about extra toolchains which were created outside of this call, which should be added to the hub repo.</td><td style="text-align: left"><code>None</code></td></tr>
 </tbody></table>
 </div>
@@ -254,7 +254,7 @@ rust_register_toolchains(<a href="#rust_register_toolchains-dev_components">dev_
 <pre>
 load("@rules_rust//rust:repositories.bzl", "rust_repositories")
 
-rust_repositories(<a href="#rust_repositories-kwargs">kwargs</a>)
+rust_repositories(<a href="#rust_repositories-kwargs">**kwargs</a>)
 </pre>
 <p><strong>Deprecated</strong>: Use <a href="#rules_rust_dependencies">rules_rust_dependencies</a>     and <a href="#rust_register_toolchains">rust_register_toolchains</a> directly.</p>
 <p><strong>PARAMETERS</strong></p>
@@ -267,7 +267,7 @@ rust_repositories(<a href="#rust_repositories-kwargs">kwargs</a>)
 <pre>
 load("@rules_rust//rust:repositories.bzl", "rust_repository_set")
 
-rust_repository_set(<a href="#rust_repository_set-name">name</a>, <a href="#rust_repository_set-versions">versions</a>, <a href="#rust_repository_set-exec_triple">exec_triple</a>, <a href="#rust_repository_set-target_settings">target_settings</a>, <a href="#rust_repository_set-allocator_library">allocator_library</a>,
+rust_repository_set(*, <a href="#rust_repository_set-name">name</a>, <a href="#rust_repository_set-versions">versions</a>, <a href="#rust_repository_set-exec_triple">exec_triple</a>, <a href="#rust_repository_set-target_settings">target_settings</a>, <a href="#rust_repository_set-allocator_library">allocator_library</a>,
                     <a href="#rust_repository_set-global_allocator_library">global_allocator_library</a>, <a href="#rust_repository_set-extra_target_triples">extra_target_triples</a>, <a href="#rust_repository_set-rustfmt_version">rustfmt_version</a>, <a href="#rust_repository_set-edition">edition</a>,
                     <a href="#rust_repository_set-dev_components">dev_components</a>, <a href="#rust_repository_set-extra_rustc_flags">extra_rustc_flags</a>, <a href="#rust_repository_set-extra_exec_rustc_flags">extra_exec_rustc_flags</a>, <a href="#rust_repository_set-opt_level">opt_level</a>, <a href="#rust_repository_set-sha256s">sha256s</a>,
                     <a href="#rust_repository_set-urls">urls</a>, <a href="#rust_repository_set-auth">auth</a>, <a href="#rust_repository_set-netrc">netrc</a>, <a href="#rust_repository_set-auth_patterns">auth_patterns</a>, <a href="#rust_repository_set-register_toolchain">register_toolchain</a>, <a href="#rust_repository_set-exec_compatible_with">exec_compatible_with</a>,
@@ -400,7 +400,7 @@ rust_toolchain_tools_repository(<a href="#rust_toolchain_tools_repository-name">
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="rust_toolchains.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="rust_bzlmod.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
@@ -414,7 +414,7 @@ rust_toolchain_tools_repository(<a href="#rust_toolchain_tools_repository-name">
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="rust_toolchains.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="rust_bzlmod.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
