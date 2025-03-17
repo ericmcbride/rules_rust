@@ -94,7 +94,7 @@ impl TemplateEngine {
             ),
         );
         // if vendor mode we need to sanitize the labels
-        let sanitize_label = if let Some(_) = render_config.vendor_mode {
+        let sanitize_label = if render_config.vendor_mode.is_some() {
             true
         } else {
             false
