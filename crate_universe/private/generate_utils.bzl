@@ -211,7 +211,7 @@ def _read_cargo_config(repository_ctx):
 
 def _read_cargo_creds(repository_ctx):
     if repository_ctx.attr.cargo_creds:
-        creds = repository_ctx.path(repositroy_ctx.attr.cargo_creds)
+        creds = repository_ctx.path(repository_ctx.attr.cargo_creds)
         return repository_ctx.read(creds)
     return None
 
@@ -332,7 +332,7 @@ def generate_config(repository_ctx):
         generate_build_scripts = repository_ctx.attr.generate_build_scripts,
         generate_target_compatible_with = repository_ctx.attr.generate_target_compatible_with,
         cargo_config = _read_cargo_config(repository_ctx),
-        cargo_creds = _read_cargo_creds(repository_ctx) 
+        cargo_creds = _read_cargo_creds(repository_ctx),
         render_config = _get_render_config(repository_ctx),
         supported_platform_triples = repository_ctx.attr.supported_platform_triples,
         repository_name = repository_ctx.name,
@@ -358,7 +358,7 @@ def get_lockfiles(repository_ctx):
     """
     return struct(
         cargo = repository_ctx.path(repository_ctx.attr.cargo_lockfile),
-        bazel = repository_ctx.path(repository_ctx.attr.lockfile) if repository_ctx.attr.lockfile else None,
+        bazel = repository_ctx.path(repository_ctx.attr.lockfile) if repository_ctx.attr.lockfile else None
     )
 
 def determine_repin(
