@@ -1021,7 +1021,7 @@ def _crate_impl(module_ctx):
 
 _FROM_COMMON_ATTRS = {
     "cargo_config": CRATES_VENDOR_ATTRS["cargo_config"],
-    "cargo_creds": CRATES_VENDOR_ATTRS["cargo_creds"]
+    "cargo_creds": CRATES_VENDOR_ATTRS["cargo_creds"],
     "cargo_lockfile": CRATES_VENDOR_ATTRS["cargo_lockfile"],
     "generate_binaries": CRATES_VENDOR_ATTRS["generate_binaries"],
     "generate_build_scripts": CRATES_VENDOR_ATTRS["generate_build_scripts"],
