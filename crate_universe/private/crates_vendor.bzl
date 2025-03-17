@@ -232,7 +232,7 @@ def _write_splicing_manifest(ctx):
 
     env = [_sys_runfile_env(ctx, "SPLICING_MANIFEST", manifest, is_windows)]
     args = ["--splicing-manifest", _expand_env("SPLICING_MANIFEST", is_windows)]
-    runfiles = [manifest] + ctx.files.manifests + ([ctx.file.cargo_config] if ctx.attr.cargo_config else [])
+    runfiles = [manifest] + ctx.files.manifests + ([ctx.file.cargo_config] if ctx.attr.cargo_config else []) + ([ctx.file.cargo_creds] if ctx.attr.cargo_creds else [])
     return args, env, runfiles
 
 def generate_splicing_manifest(*, packages, splicing_config, cargo_config, manifests, manifest_to_path):
