@@ -606,7 +606,6 @@ def _generate_hub_and_spokes(
             packages = packages,
             splicing_config = splicing_config,
             cargo_config = cfg.cargo_config,
-            cargo_creds = cfg.cargo_creds,
             manifests = manifests,
             manifest_to_path = module_ctx.path,
         ),
