@@ -152,7 +152,7 @@ impl TryFrom<SplicingManifest> for SplicingMetadata {
             ),
             None => None,
         };
-
+        tracing::debug!("CArgo config is {:?}", cargo_config);
         Ok(Self {
             direct_packages,
             manifests,
