@@ -6,6 +6,8 @@ edition = "2018"
 
 [dependencies]
 tokio = { version = "1.26.0", features = ["full"] }
+# testing metadata in semvar, full version is 0.9.4+deprecated
+serde_yaml = "=0.9.34"
 
 [dev-dependencies]
 tempfile = "3.2.0"

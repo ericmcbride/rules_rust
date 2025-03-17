@@ -293,7 +293,8 @@ def aliases(
 _NORMAL_DEPENDENCIES = {
     "vendor_local_manifests": {
         _COMMON_CONDITION: {
-            "tokio": Label("//vendor_local_manifests/crates/tokio-1.44.0:tokio"),
+            "serde_yaml": Label("//vendor_local_manifests/crates/serde_yaml-0.9.34-deprecated:serde_yaml"),
+            "tokio": Label("//vendor_local_manifests/crates/tokio-1.44.1:tokio"),
         },
     },
 }
@@ -308,7 +309,7 @@ _NORMAL_ALIASES = {
 _NORMAL_DEV_DEPENDENCIES = {
     "vendor_local_manifests": {
         _COMMON_CONDITION: {
-            "tempfile": Label("//vendor_local_manifests/crates/tempfile-3.18.0:tempfile"),
+            "tempfile": Label("//vendor_local_manifests/crates/tempfile-3.19.0:tempfile"),
             "tokio-test": Label("//vendor_local_manifests/crates/tokio-test-0.4.4:tokio_test"),
         },
     },
@@ -389,6 +390,7 @@ _CONDITIONS = {
     "cfg(all(target_arch = \"x86\", target_env = \"msvc\", not(windows_raw_dylib)))": ["@rules_rust//rust/platform:i686-pc-windows-msvc"],
     "cfg(all(target_arch = \"x86_64\", target_env = \"gnu\", not(target_abi = \"llvm\"), not(windows_raw_dylib)))": ["@rules_rust//rust/platform:x86_64-unknown-linux-gnu", "@rules_rust//rust/platform:x86_64-unknown-nixos-gnu"],
     "cfg(all(windows, not(target_vendor = \"win7\")))": ["@rules_rust//rust/platform:aarch64-pc-windows-msvc", "@rules_rust//rust/platform:i686-pc-windows-msvc", "@rules_rust//rust/platform:x86_64-pc-windows-msvc"],
+    "cfg(any())": [],
     "cfg(any(target_os = \"dragonfly\", target_os = \"freebsd\", target_os = \"hurd\", target_os = \"illumos\", all(target_os = \"horizon\", target_arch = \"arm\")))": ["@rules_rust//rust/platform:i686-unknown-freebsd", "@rules_rust//rust/platform:x86_64-unknown-freebsd"],
     "cfg(any(target_os = \"haiku\", target_os = \"redox\", target_os = \"nto\", target_os = \"aix\"))": ["@rules_rust//rust/platform:aarch64-unknown-nto-qnx710"],
     "cfg(any(target_os = \"ios\", target_os = \"visionos\", target_os = \"watchos\", target_os = \"tvos\"))": ["@rules_rust//rust/platform:aarch64-apple-ios", "@rules_rust//rust/platform:aarch64-apple-ios-sim", "@rules_rust//rust/platform:x86_64-apple-ios"],

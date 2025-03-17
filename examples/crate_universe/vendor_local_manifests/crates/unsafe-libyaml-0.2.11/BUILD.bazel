@@ -17,7 +17,7 @@ cargo_toml_env_vars(
 )
 
 rust_library(
-    name = "tokio_test",
+    name = "unsafe_libyaml",
     srcs = glob(
         include = ["**/*.rs"],
         allow_empty = False,
@@ -44,7 +44,7 @@ rust_library(
     ],
     tags = [
         "cargo-bazel",
-        "crate-name=tokio-test",
+        "crate-name=unsafe-libyaml",
         "manual",
         "noclippy",
         "norustfmt",
@@ -88,12 +88,5 @@ rust_library(
         "@rules_rust//rust/platform:x86_64-unknown-uefi": [],
         "//conditions:default": ["@platforms//:incompatible"],
     }),
-    version = "0.4.4",
-    deps = [
-        "//vendor_local_manifests/crates/async-stream-0.3.6:async_stream",
-        "//vendor_local_manifests/crates/bytes-1.10.1:bytes",
-        "//vendor_local_manifests/crates/futures-core-0.3.31:futures_core",
-        "//vendor_local_manifests/crates/tokio-1.44.1:tokio",
-        "//vendor_local_manifests/crates/tokio-stream-0.1.17:tokio_stream",
-    ],
+    version = "0.2.11",
 )

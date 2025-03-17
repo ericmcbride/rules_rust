@@ -93,11 +93,19 @@ impl TemplateEngine {
                 render_config.repository_name.clone(),
             ),
         );
+        // if vendor mode we need to sanitize the labels
+        let sanitize_label = if let Some(_) = render_config.vendor_mode {
+            true
+        } else {
+            false
+        };
+
         tera.register_function(
             "crate_alias",
             crate_alias_fn_generator(
                 render_config.crate_alias_template.clone(),
                 render_config.repository_name.clone(),
+                sanitize_label,
             ),
         );
         tera.register_function(
@@ -260,20 +268,29 @@ fn crate_label_fn_generator(template: String, repository_name: String) -> impl t
 }
 
 /// Convert a crate name into an alias name by applying transforms to invalid characters.
-fn crate_alias_fn_generator(template: String, repository_name: String) -> impl tera::Function {
+fn crate_alias_fn_generator(
+    template: String,
+    repository_name: String,
+    sanitize: bool,
+) -> impl tera::Function {
     Box::new(
         move |args: &HashMap<String, Value>| -> tera::Result<Value> {
             let name = parse_tera_param!("name", String, args);
             let version = parse_tera_param!("version", String, args);
             let target = parse_tera_param!("target", String, args);
+            let label = if sanitize {
+                sanitize_repository_name(&render_crate_bazel_label(
+                    &template,
+                    &repository_name,
+                    &name,
+                    &version,
+                    &target,
+                ))
+            } else {
+                render_crate_bazel_label(&template, &repository_name, &name, &version, &target)
+            };
 
-            match to_value(render_crate_bazel_label(
-                &template,
-                &repository_name,
-                &name,
-                &version,
-                &target,
-            )) {
+            match to_value(label) {
                 Ok(v) => Ok(v),
                 Err(_) => Err(tera::Error::msg("Failed to generate crate's label")),
             }
