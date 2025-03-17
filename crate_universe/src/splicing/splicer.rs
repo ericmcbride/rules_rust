@@ -156,7 +156,16 @@ impl<'a> SplicerKind<'a> {
         )?;
 
         // Optionally install the cargo config after contents have been symlinked
-        Self::setup_cargo_config(&splicing_manifest.cargo_config, workspace_dir.as_std_path())?;
+        Self::setup_cargo_dot_files(
+            &splicing_manifest.cargo_config,
+            workspace_dir.as_std_path(),
+            "config",
+        )?;
+        Self::setup_cargo_dot_files(
+            &splicing_manifest.cargo_creds,
+            workspace_dir.as_std_path(),
+            "credentials",
+        )?;
 
         // Add any additional depeendencies to the root package
         if !splicing_manifest.direct_packages.is_empty() {
@@ -196,7 +205,16 @@ impl<'a> SplicerKind<'a> {
         )?;
 
         // Optionally install the cargo config after contents have been symlinked
-        Self::setup_cargo_config(&splicing_manifest.cargo_config, workspace_dir.as_std_path())?;
+        Self::setup_cargo_dot_files(
+            &splicing_manifest.cargo_config,
+            workspace_dir.as_std_path(),
+            "config",
+        )?;
+        Self::setup_cargo_dot_files(
+            &splicing_manifest.cargo_creds,
+            workspace_dir.as_std_path(),
+            "credentials",
+        )?;
 
         // Ensure the root package manifest has a populated `workspace` member
         let mut manifest = (*manifest).clone();
@@ -232,8 +250,17 @@ impl<'a> SplicerKind<'a> {
     ) -> Result<SplicedManifest> {
         let mut manifest = default_cargo_workspace_manifest(&splicing_manifest.resolver_version);
 
-        // Optionally install a cargo config file into the workspace root.
-        Self::setup_cargo_config(&splicing_manifest.cargo_config, workspace_dir.as_std_path())?;
+        // Optionally install a cargo dot files into the workspace root.
+        Self::setup_cargo_dot_files(
+            &splicing_manifest.cargo_config,
+            workspace_dir.as_std_path(),
+            "config",
+        )?;
+        Self::setup_cargo_dot_files(
+            &splicing_manifest.cargo_creds,
+            workspace_dir.as_std_path(),
+            "credentials",
+        )?;
 
         let installations =
             Self::inject_workspace_members(&mut manifest, manifests, workspace_dir.as_std_path())?;
@@ -267,15 +294,18 @@ impl<'a> SplicerKind<'a> {
         Ok(SplicedManifest::MultiPackage(root_manifest_path))
     }
 
-    /// A helper for installing Cargo config files into the spliced workspace while also
+    /// A helper for installing Cargo Dot files such as `.cargo/config` or
+    /// `.cargo/credentials.toml` into the spliced workspace while also
     /// ensuring no other linked config file is available
-    fn setup_cargo_config(
+    fn setup_cargo_dot_files(
         cargo_config_path: &Option<Utf8PathBuf>,
         workspace_dir: &Path,
+        dot_file_root: &str,
     ) -> Result<()> {
         // If the `.cargo` dir is a symlink, we'll need to relink it and ensure
-        // a Cargo config file is omitted
+        // a Cargo dot file is omitted
         let dot_cargo_dir = workspace_dir.join(".cargo");
+        let dot_file_toml = &format!("{}.toml", dot_file_root);
         if dot_cargo_dir.exists() {
             let is_symlink = dot_cargo_dir
                 .symlink_metadata()
@@ -290,16 +320,20 @@ impl<'a> SplicerKind<'a> {
                     )
                 })?;
                 fs::create_dir(&dot_cargo_dir)?;
-                symlink_roots(&real_path, &dot_cargo_dir, Some(&["config", "config.toml"]))?;
+                symlink_roots(
+                    &real_path,
+                    &dot_cargo_dir,
+                    Some(&[dot_file_root, dot_file_toml]),
+                )?;
             } else {
                 for config in [
-                    dot_cargo_dir.join("config"),
-                    dot_cargo_dir.join("config.toml"),
+                    dot_cargo_dir.join(dot_file_root),
+                    dot_cargo_dir.join(dot_file_toml),
                 ] {
                     if config.exists() {
                         remove_symlink(&config).with_context(|| {
                             format!(
-                                "Failed to delete existing cargo config: {}",
+                                "Failed to delete existing cargo dot file: {}",
                                 config.display()
                             )
                         })?;
@@ -310,15 +344,15 @@ impl<'a> SplicerKind<'a> {
 
         // Make sure no other config files exist
         for config in [
-            workspace_dir.join("config"),
-            workspace_dir.join("config.toml"),
-            dot_cargo_dir.join("config"),
-            dot_cargo_dir.join("config.toml"),
+            workspace_dir.join(dot_file_root),
+            workspace_dir.join(dot_file_toml),
+            dot_cargo_dir.join(dot_file_root),
+            dot_cargo_dir.join(dot_file_toml),
         ] {
             if config.exists() {
                 remove_symlink(&config).with_context(|| {
                     format!(
-                        "Failed to delete existing cargo config: {}",
+                        "Failed to delete existing cargo dot file: {}",
                         config.display()
                     )
                 })?;
@@ -330,12 +364,12 @@ impl<'a> SplicerKind<'a> {
         while let Some(parent) = current_parent {
             let dot_cargo_dir = parent.join(".cargo");
             for config in [
-                dot_cargo_dir.join("config.toml"),
-                dot_cargo_dir.join("config"),
+                dot_cargo_dir.join(dot_file_toml),
+                dot_cargo_dir.join(dot_file_root),
             ] {
                 if config.exists() {
                     bail!(
-                        "A Cargo config file was found in a parent directory to the current workspace. This is not allowed because these settings will leak into your Bazel build but will not be reproducible on other machines.\nWorkspace = {}\nCargo config = {}",
+                        "A Cargo config dot file was found in a parent directory to the current workspace. This is not allowed because these settings will leak into your Bazel build but will not be reproducible on other machines.\nWorkspace = {}\nCargo dot file = {}",
                         workspace_dir.display(),
                         config.display(),
                     )
@@ -350,8 +384,8 @@ impl<'a> SplicerKind<'a> {
                 fs::create_dir_all(&dot_cargo_dir)?;
             }
 
-            debug!("Using Cargo config: {}", cargo_config_path);
-            fs::copy(cargo_config_path, dot_cargo_dir.join("config.toml"))?;
+            debug!("Using Cargo dot file: {}", cargo_config_path);
+            fs::copy(cargo_config_path, dot_cargo_dir.join(dot_file_toml))?;
         }
 
         Ok(())
