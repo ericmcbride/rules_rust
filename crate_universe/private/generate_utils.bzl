@@ -244,6 +244,7 @@ def compile_config(
         generate_build_scripts,
         generate_target_compatible_with,
         cargo_config,
+        cargo_creds,
         render_config,
         supported_platform_triples,
         repository_name,
@@ -298,6 +299,7 @@ def compile_config(
         generate_build_scripts = generate_build_scripts,
         annotations = annotations,
         cargo_config = cargo_config,
+        cargo_creds = cargo_creds,
         rendering = _update_render_config(
             config = render_config,
             repository_name = repository_name,
@@ -323,6 +325,7 @@ def generate_config(repository_ctx):
         generate_build_scripts = repository_ctx.attr.generate_build_scripts,
         generate_target_compatible_with = repository_ctx.attr.generate_target_compatible_with,
         cargo_config = _read_cargo_config(repository_ctx),
+        cargo_creds = repository_ctx.path(repository_ctx.attr.cargo_creds),
         render_config = _get_render_config(repository_ctx),
         supported_platform_triples = repository_ctx.attr.supported_platform_triples,
         repository_name = repository_ctx.name,
