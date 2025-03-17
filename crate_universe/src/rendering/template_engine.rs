@@ -93,13 +93,9 @@ impl TemplateEngine {
                 render_config.repository_name.clone(),
             ),
         );
-        // if vendor mode we need to sanitize the labels
-        let sanitize_label = if render_config.vendor_mode.is_some() {
-            true
-        } else {
-            false
-        };
-
+        // if vendor mode we need to sanitize the labels.  Bazel labels do not support (+)
+        // and if we do not sanitize the labels, they will not match the BUILD files
+        let sanitize_label = render_config.vendor_mode.is_some();
         tera.register_function(
             "crate_alias",
             crate_alias_fn_generator(
