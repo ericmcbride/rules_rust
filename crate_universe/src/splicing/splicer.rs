@@ -387,7 +387,7 @@ impl<'a> SplicerKind<'a> {
             debug!("Using Cargo dot file: {}", cargo_config_path);
             fs::copy(cargo_config_path, dot_cargo_dir.join(dot_file_toml))?;
         }
-        debug!("dot cargo dir is {:?}", dot_cargo_dir);
+        debug!("dot cargo dir is {:?}", dot_cargo_dir.join(dot_file_toml));
         Ok(())
     }
 
