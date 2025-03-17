@@ -66,6 +66,10 @@ pub(crate) struct CargoConfig {
     pub(crate) source: BTreeMap<String, Source>,
 }
 
+impl CargoConfig {
+    pub(crate) fn update_tokens(&mut self) {}
+}
+
 /// Each Cargo config is expected to have a default `crates-io` registry.
 fn default_registries() -> BTreeMap<String, AdditionalRegistry> {
     let mut registries = BTreeMap::new();
