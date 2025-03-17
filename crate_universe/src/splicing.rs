@@ -64,6 +64,7 @@ impl SplicingManifest {
         let Self {
             manifests,
             cargo_config,
+            cargo_creds,
             ..
         } = self;
 
@@ -90,7 +91,7 @@ impl SplicingManifest {
                 .replace("${output_base}", &output_base_str);
             Utf8PathBuf::from(resolved_path)
         });
-        let cargo_creds = cargo_config.map(|path| {
+        let cargo_creds = cargo_creds.map(|path| {
             let resolved_path = path
                 .to_string()
                 .replace("${build_workspace_directory}", &workspace_dir_str)
