@@ -318,7 +318,7 @@ impl WorkspaceMetadata {
                 None
             }
         };
-
+        tracing::debug!("=======Cargo config is {:?}", cargo_config);
         let crate_index_hash_kind = if cargo.uses_stable_registry_hash()? {
             crates_index::HashKind::Stable
         } else {
