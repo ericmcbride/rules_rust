@@ -388,6 +388,10 @@ impl<'a> SplicerKind<'a> {
             fs::copy(cargo_config_path, dot_cargo_dir.join(dot_file_toml))?;
         }
         debug!("dot cargo dir is {:?}", dot_cargo_dir.join(dot_file_toml));
+        let contents = fs::read_to_string(dot_cargo_dir.join(dot_file_toml))
+            .expect("Should have been able to read the file");
+
+        debug!("Contents of dot file is {:?}", contents);
         Ok(())
     }
 
