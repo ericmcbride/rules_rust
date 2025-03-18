@@ -223,6 +223,7 @@ impl LockGenerator {
             tracing::debug!("Fetching crates for {:?}", manifest_path.as_std_path());
             tracing::debug!("Cargo home is {:?}", std::env::var("CARGO_HOME"));
             let entries = std::fs::read_dir(std::env::var("CARGO_HOME").unwrap_or_default())?;
+            tracing::debug!("Entries are {:?}", entries);
             // Iterate over the entries and print the file names
             for entry in entries {
                 match entry {
