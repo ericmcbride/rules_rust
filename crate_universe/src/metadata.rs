@@ -222,20 +222,26 @@ impl LockGenerator {
             // of having just generated a new one
             tracing::debug!("Fetching crates for {:?}", manifest_path.as_std_path());
             tracing::debug!("Cargo home is {:?}", std::env::var("CARGO_HOME"));
-            let entries = std::fs::read_dir(std::env::var("CARGO_HOME").unwrap_or_default())?;
+            let entries = std::fs::read_dir(std::env::var("CARGO_HOME").unwrap_or_default());
             tracing::debug!("Entries are {:?}", entries);
-            // Iterate over the entries and print the file names
-            for entry in entries {
-                match entry {
-                    Ok(entry) => {
-                        let entry_path = entry.path();
-                        if entry_path.is_file() {
-                            tracing::debug!("File: {}", entry_path.display());
-                        } else if entry_path.is_dir() {
-                            tracing::debug!("Directory: {}", entry_path.display());
+            if let Ok(entries) = entries {
+                // Iterate over the entries and print the file names
+                for entry in entries {
+                    match entry {
+                        Ok(entry) => {
+                            let entry_path = entry.path();
+                            let metadata = fs::symlink_metadata(&entry_path)?;
+
+                            if metadata.is_file() {
+                                tracing::debug!("File: {}", entry_path.display());
+                            } else if metadata.is_dir() {
+                                tracing::debug!("Directory: {}", entry_path.display());
+                            } else if metadata.is_symlink() {
+                                tracing::debug!("Sym: {}", entry_path.display());
+                            }
                         }
+                        Err(e) => tracing::debug!("Error reading entry: {}", e),
                     }
-                    Err(e) => tracing::debug!("Error reading entry: {}", e),
                 }
             }
 
