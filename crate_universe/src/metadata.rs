@@ -221,6 +221,7 @@ impl LockGenerator {
             // Ensure the Cargo cache is up to date to simulate the behavior
             // of having just generated a new one
             tracing::debug!("Fetching crates for {:?}", manifest_path.as_std_path());
+            tracing::debug!("Cargo home is {:?}", std::env::var("CARGO_HOME"));
             let output = self
                 .cargo_bin
                 .command()?
