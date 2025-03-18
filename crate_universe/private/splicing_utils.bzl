@@ -59,7 +59,7 @@ def compile_splicing_manifest(splicing_config, manifests, cargo_config_path, car
     # Auto-generated splicer manifest values
     splicing_manifest_content = {
         "cargo_config": cargo_config_path,
-        "cargo_creds": carg_creds,
+        "cargo_creds": cargo_creds,
         "direct_packages": direct_packages_info,
         "manifests": manifests,
     }
