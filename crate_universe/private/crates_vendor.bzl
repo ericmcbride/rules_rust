@@ -385,7 +385,6 @@ def generate_config_file(
         generate_build_scripts = generate_build_scripts,
         generate_target_compatible_with = generate_target_compatible_with,
         cargo_config = None,
-        cargo_creds = None,
         render_config = render_config,
         supported_platform_triples = supported_platform_triples,
         repository_name = repository_name or ctx.label.name,
