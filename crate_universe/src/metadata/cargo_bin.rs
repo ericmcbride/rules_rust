@@ -142,6 +142,7 @@ impl Cargo {
         }
 
         if let Some(cargo_home) = &self.cargo_home {
+            tracing::debug!("cargo home is {:?}", cargo_home.as_os_str().to_owned());
             map.insert("CARGO_HOME".into(), cargo_home.as_os_str().to_owned());
         }
 

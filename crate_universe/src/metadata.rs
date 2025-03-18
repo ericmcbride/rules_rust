@@ -222,6 +222,22 @@ impl LockGenerator {
             // of having just generated a new one
             tracing::debug!("Fetching crates for {:?}", manifest_path.as_std_path());
             tracing::debug!("Cargo home is {:?}", std::env::var("CARGO_HOME"));
+            let entries = std::fs::read_dir(std::env::var("CARGO_HOME").unwrap_or_default())?;
+            // Iterate over the entries and print the file names
+            for entry in entries {
+                match entry {
+                    Ok(entry) => {
+                        let entry_path = entry.path();
+                        if entry_path.is_file() {
+                            println!("File: {}", entry_path.display());
+                        } else if entry_path.is_dir() {
+                            println!("Directory: {}", entry_path.display());
+                        }
+                    }
+                    Err(e) => eprintln!("Error reading entry: {}", e),
+                }
+            }
+
             let output = self
                 .cargo_bin
                 .command()?
