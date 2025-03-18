@@ -36,6 +36,7 @@ impl Cargo {
     /// Returns a new `Command` for running this cargo.
     pub(crate) fn command(&self) -> Result<Command> {
         let mut command = Command::new(&self.path);
+        tracing::debug!("CARGO PATH IS {:?}", self.path);
         command.envs(self.env()?);
         if self.is_nightly()? {
             command.arg("-Zbindeps");
