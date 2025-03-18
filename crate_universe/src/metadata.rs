@@ -229,12 +229,12 @@ impl LockGenerator {
                     Ok(entry) => {
                         let entry_path = entry.path();
                         if entry_path.is_file() {
-                            println!("File: {}", entry_path.display());
+                            tracing::debug!("File: {}", entry_path.display());
                         } else if entry_path.is_dir() {
-                            println!("Directory: {}", entry_path.display());
+                            tracing::debug!("Directory: {}", entry_path.display());
                         }
                     }
-                    Err(e) => eprintln!("Error reading entry: {}", e),
+                    Err(e) => tracing::debug!("Error reading entry: {}", e),
                 }
             }
 
