@@ -209,6 +209,13 @@ def _read_cargo_config(repository_ctx):
         return repository_ctx.read(config)
     return None
 
+def _read_cargo_creds(repository_ctx):
+    if repository_ctx.attr.cargo_creds:
+        creds = repository_ctx.path(repository_ctx.attr.cargo_creds)
+        return repository_ctx.read(creds)
+    return None
+
+
 def _update_render_config(config, repository_name):
     """Add the repository name to the render config
 
@@ -323,6 +330,7 @@ def generate_config(repository_ctx):
         generate_build_scripts = repository_ctx.attr.generate_build_scripts,
         generate_target_compatible_with = repository_ctx.attr.generate_target_compatible_with,
         cargo_config = _read_cargo_config(repository_ctx),
+        creds_config = _read_creds_config(repository_ctx),
         render_config = _get_render_config(repository_ctx),
         supported_platform_triples = repository_ctx.attr.supported_platform_triples,
         repository_name = repository_ctx.name,

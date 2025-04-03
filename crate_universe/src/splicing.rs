@@ -359,7 +359,6 @@ impl WorkspaceMetadata {
                                 .with_context(|| {
                                     format!("Failed to load index for url: {index_url}")
                                 })?;
-
                                 // Ensure each index has a valid index config
                                 index.index_config().with_context(|| {
                                     format!("`config.json` not found in index: {index_url}")
@@ -390,6 +389,7 @@ impl WorkspaceMetadata {
             .context("Failed to locate crate indexes")?;
 
         // Get the download URL of each package based on it's registry url.
+        // what does this actually collect?
         let additional_sources = pkg_sources
             .iter()
             .map(|pkg| {
@@ -409,6 +409,11 @@ impl WorkspaceMetadata {
                 })
             })
             .collect::<Result<Vec<_>>>()?;
+
+        tracing::debug!(
+            "Additional sources?  What happens here {:?}",
+            additional_sources
+        );
 
         workspace_metaata
             .sources
@@ -489,6 +494,7 @@ pub(crate) fn generate_lockfile(
         fs::remove_file(&root_lockfile_path)?;
     }
 
+    tracing::debug!("MAnifest path is {:?}", manifest_path);
     // Generate the new lockfile
     let lockfile = LockGenerator::new(cargo_bin).generate(
         manifest_path.as_path_buf(),
