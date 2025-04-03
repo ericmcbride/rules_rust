@@ -332,7 +332,7 @@ impl<'a> SplicerKind<'a> {
                 // isolated build?!
                 if let Ok(cargo_home) = std::env::var("CARGO_HOME") {
                     let path = Path::new(&cargo_home);
-                    symlink_roots(&real_path, &path, Some(&[dot_file_root, dot_file_toml]))?;
+                    symlink_roots(&real_path, path, Some(&[dot_file_root, dot_file_toml]))?;
                 }
             } else {
                 for config in [
