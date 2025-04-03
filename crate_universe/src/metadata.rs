@@ -245,6 +245,13 @@ impl LockGenerator {
                 }
             }
             let mut cmd = self.cargo_bin.command()?;
+            let login = cmd
+                .current_dir(manifest_dir.as_std_path())
+                .arg("login")
+                .arg("--registry")
+                .arg("stargate");
+
+            let mut cmd = self.cargo_bin.command()?;
 
             let foo = cmd
                 .current_dir(manifest_dir.as_std_path())
