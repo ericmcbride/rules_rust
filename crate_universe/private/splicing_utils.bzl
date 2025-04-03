@@ -108,7 +108,7 @@ def create_splicing_manifest(repository_ctx):
         splicing_config = config,
         manifests = manifests,
         cargo_config_path = cargo_config,
-        cargo_creds = cargo_creds,
+        cargo_creds_path = cargo_creds,
         packages = repository_ctx.attr.packages,
     )
 
