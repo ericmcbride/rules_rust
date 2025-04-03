@@ -678,6 +678,7 @@ mod test {
                 ),
             ]),
             cargo_config: None,
+            cargo_creds: None,
             resolver_version: cargo_toml::Resolver::V2,
         };
         let metadata = SplicingMetadata::try_from(manifest).unwrap();

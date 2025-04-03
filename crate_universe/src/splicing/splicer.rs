@@ -1697,9 +1697,9 @@ mod test {
         // Ensure cargo config files in parent directories lead to errors
         assert!(splicing_result.is_err());
         let err_str = splicing_result.err().unwrap().to_string();
-        assert!(err_str.starts_with("A Cargo config file was found in a parent directory"));
+        assert!(err_str.starts_with("A Cargo dot file was found in a parent directory"));
         assert!(err_str.contains(&format!("Workspace = {}", workspace_root)));
-        assert!(err_str.contains(&format!("Cargo config = {}", external_config)));
+        assert!(err_str.contains(&format!("Cargo dot file = {}", external_config)));
     }
 
     fn syn_dependency_detail() -> cargo_toml::DependencyDetail {
