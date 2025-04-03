@@ -244,7 +244,16 @@ impl LockGenerator {
                     }
                 }
             }
+            let mut cmd = self.cargo_bin.command()?;
 
+            let foo = cmd
+                .current_dir(manifest_dir.as_std_path())
+                .arg("fetch")
+                .arg("--manifest_path")
+                .arg(manifest_path.as_std_path())
+                .arg("--verbose");
+
+            tracing::debug!("Cargo binarry command about to run is {:?}", foo);
             let output = self
                 .cargo_bin
                 .command()?

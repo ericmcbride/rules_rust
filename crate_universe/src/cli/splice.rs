@@ -86,6 +86,9 @@ pub fn splice(opt: SpliceOptions) -> Result<()> {
         .splice_workspace()
         .context("Failed to splice workspace")?;
 
+    // We have to have a handle to the credentials before we can generate a lockfile
+    let config = Config::try_from_path(&opt.config).context("Failed to parse config")?;
+
     // Generate a lockfile
     let cargo_lockfile = generate_lockfile(
         &manifest_path,
@@ -94,8 +97,6 @@ pub fn splice(opt: SpliceOptions) -> Result<()> {
         &opt.repin,
     )
     .context("Failed to generate lockfile")?;
-
-    let config = Config::try_from_path(&opt.config).context("Failed to parse config")?;
 
     let resolver_data = TreeResolver::new(cargo.clone())
         .generate(
