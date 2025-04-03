@@ -115,7 +115,7 @@ def get_rust_tools(repository_ctx, host_triple):
     Returns:
         struct: A struct containing the expected rust tools
     """
-
+    
     # This is a bit hidden but to ensure Cargo behaves consistently based
     # on the user provided config file, the config file is installed into
     # the `CARGO_HOME` path. This is done so here since fetching tools
@@ -125,6 +125,13 @@ def get_rust_tools(repository_ctx, host_triple):
         cargo_home_config = repository_ctx.path("{}/config.toml".format(cargo_home))
         cargo_config = repository_ctx.path(repository_ctx.attr.cargo_config)
         repository_ctx.symlink(cargo_config, cargo_home_config)
+    
+    # Workspace backwards compat for cargo credentia
+    if repository_ctx.attr.isolated and repository_ctx.attr.cargo_creds:
+        cargo_home = _cargo_home_path(repository_ctx)
+        cargo_home_config = repository_ctx.path("{}/credentials.toml".format(cargo_home))
+        cargo_creds = repository_ctx.path(repository_ctx.attr.cargo_creds)
+        repository_ctx.symlink(cargo_creds, cargo_home_config)
 
     if repository_ctx.attr.rust_version.startswith(("beta", "nightly")):
         channel, _, version = repository_ctx.attr.rust_version.partition("/")
