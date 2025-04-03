@@ -37,12 +37,14 @@ def compile_splicing_manifest(splicing_config, manifests, cargo_config_path, car
     """Produce a manifest containing required components for splicing a new Cargo workspace
 
     [cargo_config]: https://doc.rust-lang.org/cargo/reference/config.html
+    [cargo_creds]: https://doc.rust-lang.org/cargo/reference/config.html#credentials
     [cargo_toml]: https://doc.rust-lang.org/cargo/reference/manifest.html
 
     Args:
         splicing_config (dict): A deserialized `splicing_config`
         manifests (dict): A mapping of paths to Bazel labels which represent [Cargo manifests][cargo_toml].
         cargo_config_path (str): The absolute path to a [Cargo config][cargo_config].
+        cargo_creds_path (str): The absolute path to a [Cargo creds File][cargo_creds].
         packages (dict): A set of crates (packages) specifications to depend on
 
     Returns:
