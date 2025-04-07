@@ -43,6 +43,7 @@ write_file(
     content = [json.encode(compile_splicing_manifest(
         cargo_config_path = "/tmp/abs/path/workspace/.cargo/config.toml",
         cargo_creds_path = "/tmp/abs/path/workspace/.cargo/credentials.toml",
+        isolated = "True",
         manifests = {
             "${build_workspace_directory}/submod/Cargo.toml": "//submod:Cargo.toml",
             "${output_base}/external_crate/Cargo.toml": "@external_crate//:Cargo.toml",
