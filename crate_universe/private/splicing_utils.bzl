@@ -104,7 +104,7 @@ def create_splicing_manifest(repository_ctx):
     config = json.decode(repository_ctx.attr.splicing_config or splicing_config())
 
     splicing_manifest = repository_ctx.path("splicing_manifest.json")
-    
+
     data = compile_splicing_manifest(
         splicing_config = config,
         manifests = manifests,
