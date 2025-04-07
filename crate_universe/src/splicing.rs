@@ -680,6 +680,7 @@ mod test {
         .unwrap();
         let manifest = SplicingManifest {
             direct_packages: BTreeMap::new(),
+            isolated: false,
             manifests: BTreeMap::from([
                 (
                     Utf8PathBuf::try_from(workspace_manifest_path).unwrap(),
