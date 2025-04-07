@@ -110,7 +110,7 @@ impl SplicingManifest {
                 if let Ok(cargo_home) = std::env::var("CARGO_HOME") {
                     let path = Path::new(&cargo_home);
                     let cargo_creds = Path::new(&resolved_path);
-                    splicer::symlink_roots(&cargo_creds, path, None).unwrap_or_default();
+                    splicer::symlink_roots(cargo_creds, path, None).unwrap_or_default();
                 }
             }
             Utf8PathBuf::from(resolved_path)
