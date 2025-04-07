@@ -249,8 +249,8 @@ def generate_splicing_manifest(*, packages, splicing_config, cargo_config, cargo
     splicing_manifest_content = {
         "cargo_config": str(manifest_to_path(cargo_config)) if cargo_config else None,
         "cargo_creds": str(manifest_to_path(cargo_creds)) if cargo_creds else None,
-        "isolated": isolated,
         "direct_packages": direct_packages_info,
+        "isolated": isolated,
         "manifests": manifests,
     }
 

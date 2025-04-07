@@ -46,6 +46,7 @@ def compile_splicing_manifest(splicing_config, manifests, cargo_config_path, car
         cargo_config_path (str): The absolute path to a [Cargo config][cargo_config].
         cargo_creds_path (str): The absolute path to a [Cargo creds File][cargo_creds].
         packages (dict): A set of crates (packages) specifications to depend on
+        isolated (bool): whether or not the `CARGO_HOME` environment variable should be isolated from the               host configuration
 
     Returns:
         dict: A dictionary representation of a `cargo_bazel::splicing::SplicingManifest`
