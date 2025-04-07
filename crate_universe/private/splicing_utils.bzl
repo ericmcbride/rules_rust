@@ -33,7 +33,7 @@ def kebab_case_keys(data):
         for (key, val) in data.items()
     }
 
-def compile_splicing_manifest(splicing_config, manifests, cargo_config_path, cargo_creds_path, packages):
+def compile_splicing_manifest(splicing_config, manifests, cargo_config_path, cargo_creds_path, packages, isolated):
     """Produce a manifest containing required components for splicing a new Cargo workspace
 
     [cargo_config]: https://doc.rust-lang.org/cargo/reference/config.html
@@ -63,6 +63,7 @@ def compile_splicing_manifest(splicing_config, manifests, cargo_config_path, car
         "cargo_config": cargo_config_path,
         "cargo_creds": cargo_creds_path,
         "direct_packages": direct_packages_info,
+        "isolated": isolated,
         "manifests": manifests,
     }
 
@@ -103,12 +104,13 @@ def create_splicing_manifest(repository_ctx):
     config = json.decode(repository_ctx.attr.splicing_config or splicing_config())
 
     splicing_manifest = repository_ctx.path("splicing_manifest.json")
-
+    
     data = compile_splicing_manifest(
         splicing_config = config,
         manifests = manifests,
         cargo_config_path = cargo_config,
         cargo_creds_path = cargo_creds,
+        isolated = repository_ctx.attr.isolated,
         packages = repository_ctx.attr.packages,
     )
 

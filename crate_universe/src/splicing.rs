@@ -42,6 +42,10 @@ pub(crate) struct SplicingManifest {
     /// The path of a Cargo cred file
     pub(crate) cargo_creds: Option<Utf8PathBuf>,
 
+    /// Defines if `CARGO_HOME` isolated from the host.  Defaults to true in starlark.  
+    /// Overridden with the environmental `CARGO_BAZEL_ISOLATED`
+    pub(crate) isolated: bool,
+
     /// The Cargo resolver version to use for splicing
     pub(crate) resolver_version: cargo_toml::Resolver,
 }
@@ -65,6 +69,7 @@ impl SplicingManifest {
             manifests,
             cargo_config,
             cargo_creds,
+            isolated,
             ..
         } = self;
 
@@ -97,6 +102,17 @@ impl SplicingManifest {
                 .to_string()
                 .replace("${build_workspace_directory}", &workspace_dir_str)
                 .replace("${output_base}", &output_base_str);
+
+            // if isolated we need to symlink the cargo creds to `CARGO_HOME`.
+            // https://doc.rust-lang.org/cargo/reference/config.html#credentials
+            if isolated {
+                // find the isolated cargo home
+                if let Ok(cargo_home) = std::env::var("CARGO_HOME") {
+                    let path = Path::new(&cargo_home);
+                    let cargo_creds = Path::new(&resolved_path);
+                    splicer::symlink_roots(&cargo_creds, path, None).unwrap_or_default();
+                }
+            }
             Utf8PathBuf::from(resolved_path)
         });
 
@@ -104,6 +120,7 @@ impl SplicingManifest {
             manifests,
             cargo_config,
             cargo_creds,
+            isolated,
             ..self
         }
     }
