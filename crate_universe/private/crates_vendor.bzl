@@ -545,6 +545,16 @@ CRATES_VENDOR_ATTRS = {
         doc = "DEPRECATED: Moved to `render_config`.",
         default = True,
     ),
+    "isolated": attr.bool(
+        doc = (
+            "If true, `CARGO_HOME` will be overwritten to a directory within the generated repository in " +
+            "order to prevent other uses of Cargo from impacting having any effect on the generated targets " +
+            "produced by this rule. For users who either have multiple `crate_repository` definitions in a " +
+            "WORKSPACE or rapidly re-pin dependencies, setting this to false may improve build times. This " +
+            "variable is also controled by `CARGO_BAZEL_ISOLATED` environment variable."
+        ),
+        default = True,
+    ),
     "manifests": attr.label_list(
         doc = "A list of Cargo manifests (`Cargo.toml` files).",
         allow_files = ["Cargo.toml"],
