@@ -609,6 +609,7 @@ def _generate_hub_and_spokes(
             cargo_creds = cfg.cargo_creds,
             manifests = manifests,
             manifest_to_path = module_ctx.path,
+            isolated = cfg.isolated,
         ),
     )
 
