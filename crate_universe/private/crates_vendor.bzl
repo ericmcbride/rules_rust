@@ -224,9 +224,9 @@ def _write_splicing_manifest(ctx):
             splicing_config = splicing_config,
             cargo_config = ctx.attr.cargo_config,
             cargo_creds = ctx.attr.cargo_creds,
-            isolated = ctx.attr.isolated,
             manifests = manifests,
             manifest_to_path = _prepare_manifest_path,
+            isolated = ctx.attr.isolated,
         ),
     )
 
