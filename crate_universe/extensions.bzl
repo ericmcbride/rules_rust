@@ -375,6 +375,7 @@ load("@bazel_features//:features.bzl", "bazel_features")
 load("@bazel_skylib//lib:structs.bzl", "structs")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("//crate_universe/private:cargo_home.bzl", "cargo_home")
 load(
     "//crate_universe/private:common_utils.bzl",
     "new_cargo_bazel_fn",
@@ -406,7 +407,6 @@ load("//crate_universe/private:urls.bzl", "CARGO_BAZEL_SHA256S", "CARGO_BAZEL_UR
 load("//rust/platform:triple.bzl", "get_host_triple")
 load("//rust/platform:triple_mappings.bzl", "system_to_binary_ext")
 load(":defs.bzl", _crate_universe_crate = "crate")
-load("//crate_universe/private:cargo_home.bzl", "cargo_home")
 
 # A list of labels which may be relative (and if so, is within the repo the rule is generated in).
 #
@@ -967,12 +967,14 @@ def _crate_impl(module_ctx):
                     module_ctx.watch(m)
 
             cargo_path, rustc_path = _get_host_cargo_rustc(module_ctx, host_triple, cfg.host_tools)
-            # symlink repository cargo config to cargo_home 
+
+            # symlink repository cargo config to cargo_home
             if cfg.isolated and cfg.cargo_config:
-                cargo_home(cargo_config=cfg.cargo_config)
-            # symlink repository cargo creds to cargo_home 
+                cargo_home(cargo_config = cfg.cargo_config)
+
+            # symlink repository cargo creds to cargo_home
             if cfg.isolated and cfg.cargo_credentials:
-                cargo_home(cargo_credentials=cfg.cargo_credentials)
+                cargo_home(cargo_credentials = cfg.cargo_credentials)
 
             cargo_bazel_fn = new_cargo_bazel_fn(
                 repository_ctx = module_ctx,
