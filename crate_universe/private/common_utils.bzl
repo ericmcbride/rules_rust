@@ -3,6 +3,7 @@
 # buildifier: disable=bzl-visibility
 load("//cargo/private:cargo_utils.bzl", _rust_get_rust_tools = "get_rust_tools")
 load("//rust/platform:triple.bzl", _get_host_triple = "get_host_triple")
+load("//crate_universe/private:cargo_home.bzl", "cargo_home")
 
 get_host_triple = _get_host_triple
 
@@ -121,10 +122,17 @@ def get_rust_tools(repository_ctx, host_triple):
     # the `CARGO_HOME` path. This is done so here since fetching tools
     # is expected to always occur before any subcommands are run.
     if repository_ctx.attr.isolated and repository_ctx.attr.cargo_config:
-        cargo_home = _cargo_home_path(repository_ctx)
-        cargo_home_config = repository_ctx.path("{}/config.toml".format(cargo_home))
-        cargo_config = repository_ctx.path(repository_ctx.attr.cargo_config)
-        repository_ctx.symlink(cargo_config, cargo_home_config)
+        # symlink cargo config
+        cargo_home(
+            cargo_config = repository_ctx.attr.cargo_config
+        )
+    
+    if repository_ctx.attr.isolated and repository_ctx.attr.cargo_config and repository_ctx.attr.cargo_credentials:
+        # symlink cargo config + creds
+        cargo_home(
+            cargo_config = repository_ctx.attr.cargo_config,
+            cargo_credentials = repository_ctx.attr.cargo_credentials
+        )
 
     if repository_ctx.attr.rust_version.startswith(("beta", "nightly")):
         channel, _, version = repository_ctx.attr.rust_version.partition("/")
@@ -150,12 +158,8 @@ def _cargo_home_path(repository_ctx):
     Returns:
         path: The path to a directory to use as `CARGO_HOME`
     """
-    cargo_home = repository_ctx.path(".cargo_home")
-    cargo_home_config = repository_ctx.path("{}/config.toml".format(cargo_home))
-    cargo_config = repository_ctx.path(repository_ctx.attr.cargo_config)
-    repository_ctx.symlink(cargo_config, cargo_home_config)
+     return repository_ctx.path(".cargo_home") 
 
-    return cargo_home
 
 def cargo_environ(repository_ctx, isolated = True):
     """Define Cargo environment varables for use with `cargo-bazel`

@@ -406,6 +406,7 @@ load("//crate_universe/private:urls.bzl", "CARGO_BAZEL_SHA256S", "CARGO_BAZEL_UR
 load("//rust/platform:triple.bzl", "get_host_triple")
 load("//rust/platform:triple_mappings.bzl", "system_to_binary_ext")
 load(":defs.bzl", _crate_universe_crate = "crate")
+load("//crate_universe//private:cargo_home.bzl", "cargo_home")
 
 # A list of labels which may be relative (and if so, is within the repo the rule is generated in).
 #
@@ -966,6 +967,13 @@ def _crate_impl(module_ctx):
                     module_ctx.watch(m)
 
             cargo_path, rustc_path = _get_host_cargo_rustc(module_ctx, host_triple, cfg.host_tools)
+            # symlink repository cargo config to cargo_home 
+            if cfg.isolated and cfg.cargo_config:
+                cargo_home(cargo_config=cfg.cargo_config)
+            # symlink repository cargo creds to cargo_home 
+            if cfg.isolated and cfg.cargo_credentials:
+                cargo_home(cargo_credentials=cfg.cargo_credentials)
+
             cargo_bazel_fn = new_cargo_bazel_fn(
                 repository_ctx = module_ctx,
                 cargo_bazel_path = generator,
@@ -1028,6 +1036,7 @@ def _crate_impl(module_ctx):
 _FROM_COMMON_ATTRS = {
     "cargo_config": CRATES_VENDOR_ATTRS["cargo_config"],
     "cargo_lockfile": CRATES_VENDOR_ATTRS["cargo_lockfile"],
+    "cargo_credentials": CRATES_VENDOR_ATTRS["cargo_credentials"],
     "generate_binaries": CRATES_VENDOR_ATTRS["generate_binaries"],
     "generate_build_scripts": CRATES_VENDOR_ATTRS["generate_build_scripts"],
     "host_tools": attr.label(
