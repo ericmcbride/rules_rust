@@ -970,11 +970,11 @@ def _crate_impl(module_ctx):
 
             # symlink repository cargo config to cargo_home
             if cfg.isolated and cfg.cargo_config:
-                cargo_home(cargo_config = cfg.cargo_config)
+                cargo_home(name = cfg.name, cargo_config = cfg.cargo_config)
 
             # symlink repository cargo creds to cargo_home
             if cfg.isolated and cfg.cargo_credentials:
-                cargo_home(cargo_credentials = cfg.cargo_credentials)
+                cargo_home(name = cfg.name, cargo_credentials = cfg.cargo_credentials)
 
             cargo_bazel_fn = new_cargo_bazel_fn(
                 repository_ctx = module_ctx,
