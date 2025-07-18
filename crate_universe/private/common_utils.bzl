@@ -150,7 +150,12 @@ def _cargo_home_path(repository_ctx):
     Returns:
         path: The path to a directory to use as `CARGO_HOME`
     """
-    return repository_ctx.path(".cargo_home")
+    cargo_home = repository_ctx.path(".cargo_home")
+    cargo_home_config = repository_ctx.path("{}/config.toml".format(cargo_home))
+    cargo_config = repository_ctx.path(repository_ctx.attr.cargo_config)
+    repository_ctx.symlink(cargo_config, cargo_home_config)
+
+    return cargo_home
 
 def cargo_environ(repository_ctx, isolated = True):
     """Define Cargo environment varables for use with `cargo-bazel`
