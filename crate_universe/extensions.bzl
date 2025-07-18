@@ -406,7 +406,7 @@ load("//crate_universe/private:urls.bzl", "CARGO_BAZEL_SHA256S", "CARGO_BAZEL_UR
 load("//rust/platform:triple.bzl", "get_host_triple")
 load("//rust/platform:triple_mappings.bzl", "system_to_binary_ext")
 load(":defs.bzl", _crate_universe_crate = "crate")
-load("//crate_universe//private:cargo_home.bzl", "cargo_home")
+load("//crate_universe/private:cargo_home.bzl", "cargo_home")
 
 # A list of labels which may be relative (and if so, is within the repo the rule is generated in).
 #
