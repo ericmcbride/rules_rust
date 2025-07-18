@@ -9,8 +9,8 @@ def _cargo_home_rule_impl(repository_ctx):
 
     if repository_ctx.attr.cargo_credentials:
         cargo_home_credentials = repository_ctx.path("{}/credentials.toml".format(cargo_home))
-        cargo_credentials = repository_ctx.path(repository_ctx.attr.cargo_credentials, cargo_home_credentials)
-        repository_ctx.symlink(cargo_config, cargo_credentials)
+        cargo_credentials = repository_ctx.path(repository_ctx.attr.cargo_credentials)
+        repository_ctx.symlink(cargo_credentials, cargo_home_credentials)
 
 cargo_home = repository_rule(
     implementation = _cargo_home_rule_impl,
