@@ -375,6 +375,7 @@ load("@bazel_features//:features.bzl", "bazel_features")
 load("@bazel_skylib//lib:structs.bzl", "structs")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("//crate_universe/private:cargo_home.bzl", "cargo_home")
 load(
     "//crate_universe/private:common_utils.bzl",
     "new_cargo_bazel_fn",
@@ -966,6 +967,15 @@ def _crate_impl(module_ctx):
                     module_ctx.watch(m)
 
             cargo_path, rustc_path = _get_host_cargo_rustc(module_ctx, host_triple, cfg.host_tools)
+
+            # symlink repository cargo config to cargo_home
+            if cfg.isolated and cfg.cargo_config:
+                cargo_home(name = cfg.name, cargo_config = cfg.cargo_config)
+
+            # symlink repository cargo creds to cargo_home
+            if cfg.isolated and cfg.cargo_credentials:
+                cargo_home(name = cfg.name, cargo_credentials = cfg.cargo_credentials)
+
             cargo_bazel_fn = new_cargo_bazel_fn(
                 repository_ctx = module_ctx,
                 cargo_bazel_path = generator,
@@ -1027,6 +1037,7 @@ def _crate_impl(module_ctx):
 
 _FROM_COMMON_ATTRS = {
     "cargo_config": CRATES_VENDOR_ATTRS["cargo_config"],
+    "cargo_credentials": CRATES_VENDOR_ATTRS["cargo_credentials"],
     "cargo_lockfile": CRATES_VENDOR_ATTRS["cargo_lockfile"],
     "generate_binaries": CRATES_VENDOR_ATTRS["generate_binaries"],
     "generate_build_scripts": CRATES_VENDOR_ATTRS["generate_build_scripts"],

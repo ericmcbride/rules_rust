@@ -510,6 +510,10 @@ CRATES_VENDOR_ATTRS = {
         doc = "A [Cargo configuration](https://doc.rust-lang.org/cargo/reference/config.html) file.",
         allow_single_file = True,
     ),
+    "cargo_credentials": attr.label(
+        doc = "A [Cargo Credentials File](https://doc.rust-lang.org/cargo/reference/config.html#credentials) file.",
+        allow_single_file = True,
+    ),
     "cargo_lockfile": attr.label(
         doc = "The path to an existing `Cargo.lock` file",
         allow_single_file = True,
