@@ -158,7 +158,7 @@ def _cargo_home_path(repository_ctx):
     Returns:
         path: The path to a directory to use as `CARGO_HOME`
     """
-     return repository_ctx.path(".cargo_home") 
+    return repository_ctx.path(".cargo_home") 
 
 
 def cargo_environ(repository_ctx, isolated = True):
