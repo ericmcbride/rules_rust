@@ -158,6 +158,14 @@
                         <!-- Generated with Stardoc: http://skydoc.bazel.build -->
 <h1 id="rust-settings"><a class="header" href="#rust-settings">Rust settings</a></h1>
 <p>Definitions for all <code>@rules_rust//rust</code> settings</p>
+<p><a id="always_enable_metadata_output_groups"></a></p>
+<h2 id="always_enable_metadata_output_groups"><a class="header" href="#always_enable_metadata_output_groups">always_enable_metadata_output_groups</a></h2>
+<pre>
+--@rules_rust//rust/settings:always_enable_metadata_output_groups
+</pre>
+<p>A flag to enable the <code>always_enable_metadata_output_groups</code> setting.</p>
+<p>If this flag is true, all rules will support the <code>metadata</code> and
+<code>rustc_rmeta_output</code> output groups.</p>
 <p><a id="capture_clippy_output"></a></p>
 <h2 id="capture_clippy_output"><a class="header" href="#capture_clippy_output">capture_clippy_output</a></h2>
 <pre>
@@ -184,6 +192,15 @@
 </pre>
 <p>This setting may be used to pass extra options to clippy from the command line.</p>
 <p>It applies across all targets.</p>
+<p><a id="clippy_output_diagnostics"></a></p>
+<h2 id="clippy_output_diagnostics"><a class="header" href="#clippy_output_diagnostics">clippy_output_diagnostics</a></h2>
+<pre>
+--@rules_rust//rust/settings:clippy_output_diagnostics
+</pre>
+<p>A flag to enable the <code>clippy_output_diagnostics</code> setting.</p>
+<p>If this flag is true, rules_rust will save clippy json output (suitable for consumption
+by rust-analyzer) in a file, available from the <code>clippy_output</code> output group. This is the
+clippy equivalent of <code>rustc_output_diagnostics</code>.</p>
 <p><a id="clippy_toml"></a></p>
 <h2 id="clippy_toml"><a class="header" href="#clippy_toml">clippy_toml</a></h2>
 <pre>
@@ -291,6 +308,14 @@ When the linking is not done by rustc, the <code>rust_toolchain</code> itself pr
 --@rules_rust//rust/settings:experimental_use_sh_toolchain_for_bootstrap_process_wrapper
 </pre>
 <p>A flag to control whether the shell path from a shell toolchain (<code>@bazel_tools//tools/sh:toolchain_type</code>)     is embedded into the bootstrap process wrapper for the <code>.sh</code> file.</p>
+<p><a id="extra_exec_rustc_env"></a></p>
+<h2 id="extra_exec_rustc_env"><a class="header" href="#extra_exec_rustc_env">extra_exec_rustc_env</a></h2>
+<pre>
+--@rules_rust//rust/settings:extra_exec_rustc_env
+</pre>
+<p>This setting may be used to pass extra environment variables to rustc from the command line in exec configuration.</p>
+<p>It applies to tools built and run during the build process, such as proc-macros and build scripts.
+This can be useful for enabling features that are needed during tool compilation.</p>
 <p><a id="extra_exec_rustc_flag"></a></p>
 <h2 id="extra_exec_rustc_flag"><a class="header" href="#extra_exec_rustc_flag">extra_exec_rustc_flag</a></h2>
 <pre>
@@ -306,6 +331,14 @@ When the linking is not done by rustc, the <code>rust_toolchain</code> itself pr
 <p>This setting may be used to pass extra options to rustc from the command line in exec configuration.</p>
 <p>It applies across all targets whereas the rustc_flags option on targets applies only
 to that target. This can be useful for passing build-wide options such as LTO.</p>
+<p><a id="extra_rustc_env"></a></p>
+<h2 id="extra_rustc_env"><a class="header" href="#extra_rustc_env">extra_rustc_env</a></h2>
+<pre>
+--@rules_rust//rust/settings:extra_rustc_env
+</pre>
+<p>This setting may be used to pass extra environment variables to rustc from the command line in non-exec configuration.</p>
+<p>It applies across all targets whereas environment variables set in a specific rule apply only to that target.
+This can be useful for setting build-wide env flags such as <code>RUSTC_BOOTSTRAP=1</code>.</p>
 <p><a id="extra_rustc_flag"></a></p>
 <h2 id="extra_rustc_flag"><a class="header" href="#extra_rustc_flag">extra_rustc_flag</a></h2>
 <pre>
